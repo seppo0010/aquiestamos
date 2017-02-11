@@ -12,8 +12,30 @@
         if (settings) aeFetchLocations();
     }
 
+    function aeDoCheckin() {
+        var center = map.getCenter();
+        jQuery.ajax({
+            url: settings.base_url + 'ae/v1/checkin',
+            method: 'POST',
+            headers: {'x-wp-nonce':settings.nonce},
+            data: {
+                lat: center.lat,
+                lon: center.lng,
+            }
+        });
+    }
+
     window.aeSettings = function (_settings) {
         settings = _settings;
+        jQuery('#ae_checkin').click(function(evt) {
+            evt.preventDefault();
+            if (settings.loggedin) {
+                aeDoCheckin();
+            } else {
+                jQuery('#ae_login').show();
+                jQuery('#ae_checkin').hide();
+            }
+        });
         if (mapReady) aeFetchLocations();
     }
 
