@@ -1,21 +1,21 @@
 (function() {
     var mapReady = false;
-    var nonce = null;
+    var settings = null;
 
     window.aeMapReady = function() {
         mapReady = true;
-        if (nonce) aeFetchLocations();
+        if (settings) aeFetchLocations();
     }
 
-    window.aeSetNonce = function (_nonce) {
-        nonce = _nonce;
+    window.aeSettings = function (_settings) {
+        settings = _settings;
         if (mapReady) aeFetchLocations();
     }
 
     function aeFetchLocations() {
         jQuery.ajax({
-            url: '/index.php/wp-json/ae/v1/checkin',
-            headers: {'x-wp-nonce':nonce},
+            url: settings.base_url + 'ae/v1/checkin',
+            headers: {'x-wp-nonce':settings.nonce},
         }).done(function (response) {
             aeInitMap(response);
         });
