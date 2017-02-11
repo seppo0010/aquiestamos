@@ -12,7 +12,9 @@ Version: 1
 
 defined('ABSPATH') or die('');
 
+require dirname(__FILE__) . '/admin.php';
 require dirname(__FILE__) . '/db.php';
+require dirname(__FILE__) . '/js.php';
 require dirname(__FILE__) . '/post.php';
 require dirname(__FILE__) . '/rest.php';
 require dirname(__FILE__) . '/shortcode.php';
