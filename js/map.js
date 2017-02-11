@@ -1,6 +1,11 @@
 (function() {
+    var map = null;
     var mapReady = false;
     var settings = null;
+    var mapDefaults = {
+        zoom: 4,
+        center: {lat: -35.376184, lng: -63.998128}
+    };
 
     window.aeMapReady = function() {
         mapReady = true;
@@ -10,6 +15,25 @@
     window.aeSettings = function (_settings) {
         settings = _settings;
         if (mapReady) aeFetchLocations();
+    }
+
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var center = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            var zoom = 15;
+            if (map) {
+                map.panTo(center);
+                map.setZoom(zoom);
+            } else {
+                mapDefaults = {
+                    zoom: zoom,
+                    center: center
+                }
+            }
+        });
     }
 
     function aeFetchLocations() {
@@ -22,10 +46,7 @@
     };
 
     function aeInitMap(locations) {
-        var map = new google.maps.Map(document.getElementById('ae_map'), {
-            zoom: 4,
-            center: {lat: -35.376184, lng: -63.998128}
-        });
+        map = new google.maps.Map(document.getElementById('ae_map'), mapDefaults);
         var markers = locations.map(function(location, i) {
             return new google.maps.Marker({position: location});
         });
