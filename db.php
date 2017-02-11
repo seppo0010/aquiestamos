@@ -40,9 +40,18 @@ function ae_update_db_check() {
 }
 add_action('plugins_loaded', 'ae_update_db_check');
 
-function ae_insert_post($post_id, $latitude, $longitude) {
+function ae_insert_post($post_id, $author, $latitude, $longitude) {
 	global $wpdb;
 	$table_name = ae_checkin_table_name();
+	$posts_table_name = $wpdb->prefix . 'posts';
+
+	$wpdb->query($wpdb->prepare("
+		DELETE $table_name
+		FROM $table_name
+		JOIN $posts_table_name ON $posts_table_name.id = $table_name.post_id
+		WHERE $posts_table_name.post_author = %d
+	", $author));
+
 	$wpdb->insert($table_name, array(
 		'post_id' => $post_id,
 		'latitude' => (float)$latitude,
@@ -51,5 +60,5 @@ function ae_insert_post($post_id, $latitude, $longitude) {
 }
 
 add_action("rest_insert_ae_checkin", function($post, $request, $a) {
-	ae_insert_post($post->ID, $request['lat'], $request['lon']);
+	ae_insert_post($post->ID, $post->post_author, $request['lat'], $request['lon']);
 }, 10, 3);
