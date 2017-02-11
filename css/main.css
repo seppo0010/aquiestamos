@@ -1,0 +1,36 @@
+#ae_map_container {
+    height: 1000px;
+    width: 1000px;
+    position: relative;
+}
+
+#ae_map {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+}
+
+#ae_checkin {
+    width: 100px;
+    padding: 10px;
+    background: red;
+    margin: 0 auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 200px;
+    z-index: 4;
+}
+
+#ae_checkin a,
+#ae_checkin a:hover,
+#ae_checkin a:visited,
+#ae_checkin a:active {
+    text-align: center;
+    display: block;
+    height: 20px;
+    line-height: 20px;
+}
