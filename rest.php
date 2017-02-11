@@ -28,8 +28,22 @@ class WP_REST_Checkin_Controller extends WP_REST_Posts_Controller {
 		));
 	}
 
-	function get_checkins() {
-		return ae_get_posts_in_location(array(-90, 90), array(-180, 180));
+	function get_checkins($request) {
+		if (
+			isset($request['latitude']) &&
+			is_array($request['latitude']) &&
+			count($request['latitude']) == 2 &&
+			isset($request['longitude']) &&
+			is_array($request['longitude']) &&
+			count($request['longitude']) == 2
+			) {
+			$latitudes = array((float)$request['latitude'][0], (float)$request['latitude'][1]);
+			$longitudes = array((float)$request['longitude'][0], (float)$request['longitude'][1]);
+		} else {
+			$latitudes = array(-90, 90);
+			$longitudes = array(-180, 180);
+		}
+		return ae_get_posts_in_location($latitudes, $longitudes);
 	}
 
 	public function create_item($request) {
