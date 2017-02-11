@@ -29,7 +29,7 @@ class WP_REST_Checkin_Controller extends WP_REST_Posts_Controller {
 	}
 
 	function get_checkins() {
-		return [];
+		return ae_get_posts_in_location(array(-90, 90), array(-180, 180));
 	}
 
 	public function create_item($request) {

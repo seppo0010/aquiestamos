@@ -1,0 +1,42 @@
+<!-- CREATE -->
+<script>
+jQuery(function() {
+jQuery.ajax( {
+    url: '/index.php/wp-json/ae/v1/checkin',
+    method: 'POST',
+    headers: {'x-wp-nonce':'[nonce-wp-rest]'},
+    data:{
+        'title' : 'Hello Moon',lat: -23,lon:12
+    }
+} ).done( function ( response ) {
+    console.log( response );
+});
+});
+</script>
+
+<!-- DISPLAY -->
+<div id="map" style="width:1000px;height:1000px;"></div>
+<script>
+function fetchLocations() {
+        jQuery.ajax({
+                url: '/index.php/wp-json/ae/v1/checkin',
+                headers: {'x-wp-nonce':'[nonce-wp-rest]'},
+        }).done(function (response) {
+                initMap(response);
+        });
+};
+function initMap(locations) {
+        var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 1,
+                center: {lat: 0, lng: 0}
+        });
+        var markers = locations.map(function(location, i) {
+                return new google.maps.Marker({position: location});
+        });
+        var markerCluster = new MarkerClusterer(map, markers, {
+                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        });
+}
+</script>
+<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGgCiKaCrV9ZP8LT8Q988RTkEjiBdYgRA&callback=fetchLocations"></script>
