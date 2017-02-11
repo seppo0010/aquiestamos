@@ -1,12 +1,17 @@
 <?php
 defined('ABSPATH') or die('');
 
+function ae_checkin_table_name() {
+	global $wpdb;
+	return $wpdb->prefix . 'ae_checkin';
+}
+
 $ae_db_version = 1;
 function ae_install() {
 	global $wpdb;
 	global $ae_db_version;
 
-	$table_name = $wpdb->prefix . 'ae_checkin';
+	$table_name = ae_checkin_table_name();
 
 	$charset_collate = $wpdb->get_charset_collate();
 
@@ -34,3 +39,17 @@ function ae_update_db_check() {
     }
 }
 add_action('plugins_loaded', 'ae_update_db_check');
+
+function ae_insert_post($post_id, $latitude, $longitude) {
+	global $wpdb;
+	$table_name = ae_checkin_table_name();
+	$wpdb->insert($table_name, array(
+		'post_id' => $post_id,
+		'latitude' => (float)$latitude,
+		'longitude' => (float)$longitude,
+	));
+}
+
+add_action("rest_insert_ae_checkin", function($post, $request, $a) {
+	ae_insert_post($post->ID, $request['lat'], $request['lon']);
+}, 10, 3);
