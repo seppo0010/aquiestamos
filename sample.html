@@ -1,16 +1,20 @@
 <!-- CREATE -->
+<input type="text" name="lat" value="-34.603333" />
+<input type="text" name="lon" value="-58.381667" />
+<input type="submit" value="Check in" id="checkin" />
 <script>
-jQuery(function() {
-jQuery.ajax( {
-    url: '/index.php/wp-json/ae/v1/checkin',
-    method: 'POST',
-    headers: {'x-wp-nonce':'[nonce-wp-rest]'},
-    data:{
-        'title' : 'Hello Moon',lat: -23,lon:12
-    }
-} ).done( function ( response ) {
-    console.log( response );
-});
+jQuery('#checkin').on('click',function() {
+	jQuery.ajax( {
+		url: '/index.php/wp-json/ae/v1/checkin',
+		method: 'POST',
+		headers: {'x-wp-nonce':'[nonce-wp-rest]'},
+		data: {
+			lat: parseFloat(jQuery('input[name=lat]').val()),
+			lon: parseFloat(jQuery('input[name=lon]').val()),
+		}
+	}).done(function(response) {
+		console.log(response);
+	});
 });
 </script>
 
@@ -18,24 +22,24 @@ jQuery.ajax( {
 <div id="map" style="width:1000px;height:1000px;"></div>
 <script>
 function fetchLocations() {
-        jQuery.ajax({
-                url: '/index.php/wp-json/ae/v1/checkin',
-                headers: {'x-wp-nonce':'[nonce-wp-rest]'},
-        }).done(function (response) {
-                initMap(response);
-        });
+	jQuery.ajax({
+		url: '/index.php/wp-json/ae/v1/checkin',
+		headers: {'x-wp-nonce':'[nonce-wp-rest]'},
+	}).done(function (response) {
+		initMap(response);
+	});
 };
 function initMap(locations) {
-        var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 1,
-                center: {lat: 0, lng: 0}
-        });
-        var markers = locations.map(function(location, i) {
-                return new google.maps.Marker({position: location});
-        });
-        var markerCluster = new MarkerClusterer(map, markers, {
-                imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
-        });
+	var map = new google.maps.Map(document.getElementById('map'), {
+		zoom: 4,
+		center: {lat: -35.376184, lng: -63.998128}
+	});
+	var markers = locations.map(function(location, i) {
+		return new google.maps.Marker({position: location});
+	});
+	var markerCluster = new MarkerClusterer(map, markers, {
+		imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+	});
 }
 </script>
 <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
