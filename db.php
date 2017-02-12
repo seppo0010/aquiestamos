@@ -65,6 +65,22 @@ add_action("rest_insert_ae_checkin", function($post, $request, $a) {
 
 function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 	global $wpdb;
+	$cache_enabled = get_option('ae_cache_enabled');
+	$cache_key = serialize(func_get_args());
+	$cache_group = 'ae_get_posts_in_location';
+	$cache_duration = 5 * 60;
+	// If we are getting many reads, we want to invalidate one randomly to
+	// fetch new data without evicting yet the key, just refreshing it.
+	// The keys have a short-lived duration anyway so the latency is limited
+	// also, since the $since parameter is used to keep track of the markers,
+	// all values will eventually arrive to the user.
+	if ($cache_enabled && rand(0, 100) !== 0) {
+		$cache_value = wp_cache_get($cache_key, $cache_group);
+		if ($cache_value) {
+			return $cache_value;
+		}
+	}
+
 	$table_name = ae_checkin_table_name();
 
 	$where = '';
@@ -90,10 +106,17 @@ function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 		min($longitudes), max($longitudes)
 	));
 
-	return array(
+	$retval = array(
 		'since' => count($results) > 0 ? $results[0]->id : (int)$since,
 		'results' => array_map(function($p) {
 			return array('lat' => (float)$p->lat, 'lng' => (float)$p->lng);
 		}, $results)
 	);
+
+	if ($cache_enabled && count($results) > 0) {
+		// we don't want to cache empty results... let's go to the db again
+		wp_cache_set($cache_key, $retval, $cache_group, $cache_duration);
+	}
+
+	return $retval;
 }
