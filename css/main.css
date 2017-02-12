@@ -47,3 +47,16 @@
     z-index: 4;
     display: none;
 }
+
+#ae_thanks {
+    width: 200px;
+    padding: 10px;
+    background: blue;
+    margin: 0 auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 460px;
+    z-index: 4;
+    display: none;
+}

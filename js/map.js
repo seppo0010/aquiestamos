@@ -6,6 +6,7 @@
         zoom: 4,
         center: {lat: -35.376184, lng: -63.998128}
     };
+    var markerCluster = null;
 
     window.aeMapReady = function() {
         mapReady = true;
@@ -13,6 +14,9 @@
     }
 
     function aeDoCheckin() {
+        jQuery('#ae_login').hide();
+        jQuery('#ae_checkin').hide();
+        jQuery('#ae_thanks').show();
         var center = map.getCenter();
         jQuery.ajax({
             url: settings.base_url + 'ae/v1/checkin',
@@ -21,6 +25,10 @@
             data: {
                 lat: center.lat,
                 lon: center.lng,
+            }
+        }).done(function (response) {
+            if (markerCluster) {
+                markerCluster.addMarkers([new google.maps.Marker({position: center})]);
             }
         });
     }
@@ -72,7 +80,7 @@
         var markers = locations.map(function(location, i) {
             return new google.maps.Marker({position: location});
         });
-        var markerCluster = new MarkerClusterer(map, markers, {
+        markerCluster = new MarkerClusterer(map, markers, {
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
         });
     }
