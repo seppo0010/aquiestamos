@@ -5,6 +5,7 @@
     var mapDefaults = null;;
     var markerCluster = null;
     var checkinAfterInit = false;
+    var since = null;
 
     window.aeMapReady = function() {
         mapReady = true;
@@ -25,9 +26,7 @@
                 lon: center.lng(),
             }
         }).done(function (response) {
-            if (markerCluster) {
-                markerCluster.addMarkers([new google.maps.Marker({position: center})]);
-            }
+            aePollLocations();
         });
     }
 
@@ -68,6 +67,16 @@
         });
     }
 
+    function aePollLocations() {
+        jQuery.ajax({
+            url: settings.base_url + 'ae/v1/checkin?since=' + (since || ''),
+            headers: {'x-wp-nonce':settings.nonce},
+        }).done(function (response) {
+            since = response.since;
+            aeAddLocations(response.results);
+        });
+    }
+
     function aeFetchLocations() {
         if (document.cookie) {
             var key = 'ae_checkin_location=';
@@ -93,21 +102,26 @@
             url: settings.base_url + 'ae/v1/checkin',
             headers: {'x-wp-nonce':settings.nonce},
         }).done(function (response) {
-            aeInitMap(response);
+            since = response.since;
+            aeInitMap(response.results);
         });
+        setInterval(aePollLocations, 30000);
     };
 
+    function aeAddLocations(locations) {
+        markerCluster.addMarkers(locations.map(function(location) {
+            return new google.maps.Marker({position: location});
+        }));
+    }
     function aeInitMap(locations) {
         map = new google.maps.Map(document.getElementById('ae_map'), mapDefaults || {
             zoom: 4,
             center: {lat: -35.376184, lng: -63.998128}
         });
-        var markers = locations.map(function(location, i) {
-            return new google.maps.Marker({position: location});
-        });
-        markerCluster = new MarkerClusterer(map, markers, {
+        markerCluster = new MarkerClusterer(map, [], {
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
         });
+        aeAddLocations(locations);
         if (checkinAfterInit) {
             aeDoCheckin();
         }

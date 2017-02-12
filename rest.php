@@ -43,7 +43,8 @@ class WP_REST_Checkin_Controller extends WP_REST_Posts_Controller {
 			$latitudes = array(-90, 90);
 			$longitudes = array(-180, 180);
 		}
-		return ae_get_posts_in_location($latitudes, $longitudes);
+		$since = empty($request['since']) ? NULL : (int)$request['since'];
+		return ae_get_posts_in_location($latitudes, $longitudes, $since);
 	}
 
 	public function create_item($request) {

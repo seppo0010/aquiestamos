@@ -63,13 +63,18 @@ add_action("rest_insert_ae_checkin", function($post, $request, $a) {
 	ae_insert_post($post->ID, $post->post_author, $request['lat'], $request['lon']);
 }, 10, 3);
 
-function ae_get_posts_in_location($latitudes, $longitudes) {
+function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 	global $wpdb;
 	$table_name = ae_checkin_table_name();
-	return array_map(function($p) {
-		return array('lat' => (float)$p->lat, 'lng' => (float)$p->lng);
-	}, $wpdb->get_results($wpdb->prepare("
+
+	$where = '';
+	if ($since) {
+		$where .= ' AND id > ' . (int)$since;
+	}
+
+	$results = $wpdb->get_results($wpdb->prepare("
 		SELECT
+			id,
 			latitude as lat,
 			longitude as lng
 		FROM $table_name
@@ -77,10 +82,18 @@ function ae_get_posts_in_location($latitudes, $longitudes) {
 			latitude BETWEEN %f and %f
 		AND
 			longitude BETWEEN %f and %f
+			$where
 		ORDER BY id DESC
 		LIMIT 1000
-	",
-	min($latitudes), max($latitudes),
-	min($longitudes), max($longitudes)
-	)));
+		",
+		min($latitudes), max($latitudes),
+		min($longitudes), max($longitudes)
+	));
+
+	return array(
+		'since' => count($results) > 0 ? $results[0]->id : (int)$since,
+		'results' => array_map(function($p) {
+			return array('lat' => (float)$p->lat, 'lng' => (float)$p->lng);
+		}, $results)
+	);
 }
