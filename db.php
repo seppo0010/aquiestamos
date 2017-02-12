@@ -6,7 +6,7 @@ function ae_checkin_table_name() {
 	return $wpdb->prefix . 'ae_checkin';
 }
 
-$ae_db_version = 1;
+$ae_db_version = 2;
 function ae_install() {
 	global $wpdb;
 	global $ae_db_version;
