@@ -4,6 +4,9 @@ defined('ABSPATH') or die('');
 function create_post_type() {
 	register_post_type('ae_checkin',
 		array(
+			'capabilities' => array(
+				'create_posts' => 'create_checkins',
+			),
 			'labels' => array(
 				'name' => __('Checkins'),
 				'singular_name' => __('Checkin')

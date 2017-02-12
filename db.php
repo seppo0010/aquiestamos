@@ -29,6 +29,9 @@ function ae_install() {
 	dbDelta($sql);
 
 	add_option('ae_db_version', $ae_db_version);
+
+	$role = get_role('subscriber');
+	$role->add_cap('create_checkins');
 }
 register_activation_hook( __FILE__, 'ae_install' );
 
