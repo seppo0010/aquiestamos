@@ -6,7 +6,7 @@ add_shortcode('ae-map', function($atts) {
 	'<div id="ae_map"></div>' .
 	'<div id="ae_checkin"><a href="javascript:void(null)">Aqu&iacute; estoy</a></div>' .
 	'<div id="ae_login">' . do_shortcode('[TheChamp-Login]') . '</div>' .
-	'<div id="ae_thanks">Gracias</div>' .
+	'<div id="ae_thanks">Gracias ' . do_shortcode('[TheChamp-Sharing]') . '</div>' .
 	'</div>' .
 	'<script>aeSettings(' . json_encode(array(
 		'nonce' => wp_create_nonce('wp_rest'),
