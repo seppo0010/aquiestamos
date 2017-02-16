@@ -10,7 +10,7 @@
 
     window.aeMapReady = function() {
         mapReady = true;
-        if (settings) aeFetchLocations();
+        aeFetchLocations();
     }
 
     function aeDoCheckin() {
@@ -49,7 +49,7 @@
                 jQuery('#ae_checkin').hide();
             }
         });
-        if (mapReady) aeFetchLocations();
+        aeFetchLocations();
     }
 
     if ("geolocation" in navigator) {
@@ -84,6 +84,9 @@
     }
 
     function aeFetchLocations() {
+        if (!settings || !mapReady) {
+            return;
+        }
         if (document.cookie) {
             var key = 'ae_checkin_location=';
             var cookie = document.cookie;
@@ -125,7 +128,8 @@
     function aeInitMap(locations) {
         map = new google.maps.Map(document.getElementById('ae_map'), mapDefaults || {
             zoom: 4,
-            center: {lat: -35.376184, lng: -63.998128}
+            center: {lat: -35.376184, lng: -63.998128},
+            styles: settings.styles,
         });
         markerCluster = new MarkerClusterer(map, [], {
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'

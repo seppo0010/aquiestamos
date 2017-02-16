@@ -23,5 +23,6 @@ add_shortcode('ae-map', function($atts) {
 		'base_url' => get_rest_url(),
 		'loggedin' => !!wp_get_current_user()->ID,
 		'marker' => $marker,
+		'styles' => json_decode(get_option('ae_map_styles')),
 	)) . ');</script>';
 });

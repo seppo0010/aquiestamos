@@ -11,6 +11,18 @@ function ae_settings() {
 			'type' => 'checkbox',
 		),
 		array(
+			'label' => 'Map JSON styles<br />See <a href="https://developers.google.com/maps/documentation/javascript/styling">reference</a>',
+			'name' => 'ae_map_styles',
+			'type' => 'textarea',
+			'sanitize_callback' => function($value) {
+				if (json_decode($value) === NULL) {
+					add_settings_error('ae_map_styles', 'ae_map_styles-invalid_json', 'JSON is invalid');
+					return '';
+				}
+				return $value;
+			}
+		),
+		array(
 			'label' => 'Marker URL',
 			'name' => 'ae_marker_url',
 		),
@@ -36,7 +48,7 @@ function ae_settings() {
 add_action('admin_init', function() {
 	foreach (ae_settings() as $setting) {
 		add_option($setting['name'], '');
-		register_setting('ae_options', $setting['name']);
+		register_setting('ae_options', $setting['name'], isset($setting['sanitize_callback']) ? $setting['sanitize_callback'] : NULL);
 	}
 });
 
@@ -55,7 +67,7 @@ add_action('admin_menu', function() {
 	<?php if (isset($setting['type']) && $setting['type'] === 'checkbox') { ?>
 	<td><input type="checkbox" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="1" <?php echo get_option($setting['name']) ? 'checked=""' : ''; ?> /></td>
 	<?php } elseif (isset($setting['type']) && $setting['type'] === 'textarea') { ?>
-	<td><textarea id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>"><?php echo htmlentities(get_option($setting['name']), ENT_QUOTES); ?></textarea></td>
+	<td><textarea id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" cols="80" rows="6"><?php echo htmlentities(get_option($setting['name']), ENT_QUOTES); ?></textarea></td>
 	<?php } else { ?>
 	<td><input type="text" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="<?php echo htmlentities(get_option($setting['name']), ENT_QUOTES); ?>" /></td>
 	<?php } ?>
