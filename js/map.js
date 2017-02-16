@@ -110,7 +110,14 @@
 
     function aeAddLocations(locations) {
         markerCluster.addMarkers(locations.map(function(location) {
-            return new google.maps.Marker({position: location});
+            return new google.maps.Marker({
+                position: location,
+                icon: settings.marker ? new google.maps.MarkerImage(settings.marker.url,
+                    new google.maps.Size(settings.marker.width, settings.marker.height),
+                    new google.maps.Point(0, 0),
+                    new google.maps.Point(settings.marker.vertexX, settings.marker.vertexY)
+                ) : null,
+            });
         }));
     }
     function aeInitMap(locations) {

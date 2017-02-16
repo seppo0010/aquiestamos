@@ -1,24 +1,47 @@
 <?php
+function ae_settings() {
+	return array(
+		array(
+			'label' => 'Google Maps key',
+			'name' => 'ae_google_maps_key',
+		),
+		array(
+			'label' => 'Enable cache?<br />Only if you install a <a href="https://codex.wordpress.org/Class_Reference/WP_Object_Cache#Persistent_Cache_Plugins" target="_blank">cache plugin</a>',
+			'name' => 'ae_cache_enabled',
+			'type' => 'checkbox',
+		),
+		array(
+			'label' => 'Marker URL',
+			'name' => 'ae_marker_url',
+		),
+		array(
+			'label' => 'Marker width',
+			'name' => 'ae_marker_width',
+		),
+		array(
+			'label' => 'Marker height',
+			'name' => 'ae_marker_height',
+		),
+		array(
+			'label' => 'Marker vertex x',
+			'name' => 'ae_marker_vertexX',
+		),
+		array(
+			'label' => 'Marker vertex y',
+			'name' => 'ae_marker_vertexY',
+		),
+	);
+}
+
 add_action('admin_init', function() {
-	add_option('ae_google_maps_key', '');
-	register_setting('ae_options', 'ae_google_maps_key');
-	add_option('ae_cache_enabled', '');
-	register_setting('ae_options', 'ae_cache_enabled');
+	foreach (ae_settings() as $setting) {
+		add_option($setting['name'], '');
+		register_setting('ae_options', $setting['name']);
+	}
 });
 
 add_action('admin_menu', function() {
 	add_options_page('Aqui Estamos Options', 'Aqui Estamos', 'manage_options', 'aqui-estamos', function() {
-	$settings = [
-		[
-			'label' => 'Google Maps key',
-			'name' => 'ae_google_maps_key',
-		],
-		[
-			'label' => 'Enable cache?<br />Only if you install a <a href="https://codex.wordpress.org/Class_Reference/WP_Object_Cache#Persistent_Cache_Plugins" target="_blank">cache plugin</a>',
-			'name' => 'ae_cache_enabled',
-			'type' => 'checkbox',
-		],
-	];
 	?>
 	<div>
 	<?php screen_icon(); ?>
@@ -26,7 +49,7 @@ add_action('admin_menu', function() {
 	<form method="post" action="options.php">
 	<?php settings_fields('ae_options'); ?>
 	<table>
-	<?php foreach ($settings as $setting) { ?>
+	<?php foreach (ae_settings() as $setting) { ?>
 	<tr valign="top">
 	<th scope="row"><label for="<?php echo $setting['name']; ?>"><?php echo $setting['label']; ?></label></th>
 	<?php if (isset($setting['type']) && $setting['type'] === 'checkbox') { ?>
