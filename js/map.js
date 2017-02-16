@@ -6,6 +6,7 @@
     var markerCluster = null;
     var checkinAfterInit = false;
     var since = null;
+    var icon = null;
 
     window.aeMapReady = function() {
         mapReady = true;
@@ -32,6 +33,11 @@
 
     window.aeSettings = function (_settings) {
         settings = _settings;
+        icon = settings.marker ? new google.maps.MarkerImage(settings.marker.url,
+            new google.maps.Size(settings.marker.width, settings.marker.height),
+            new google.maps.Point(0, 0),
+            new google.maps.Point(settings.marker.vertexX, settings.marker.vertexY)
+        ) : null;
         jQuery('#ae_checkin').click(function(evt) {
             evt.preventDefault();
             if (settings.loggedin) {
@@ -112,11 +118,7 @@
         markerCluster.addMarkers(locations.map(function(location) {
             return new google.maps.Marker({
                 position: location,
-                icon: settings.marker ? new google.maps.MarkerImage(settings.marker.url,
-                    new google.maps.Size(settings.marker.width, settings.marker.height),
-                    new google.maps.Point(0, 0),
-                    new google.maps.Point(settings.marker.vertexX, settings.marker.vertexY)
-                ) : null,
+                icon: icon,
             });
         }));
     }
