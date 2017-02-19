@@ -1,77 +1,76 @@
 <?php
-defined('ABSPATH') or die('');
+/**
+ * Aqui estamos plugin database schema and accessor
+ *
+ * @package Aqui estamos
+ * @version 1
+ */
 
-function ae_checkin_table_name() {
-	global $wpdb;
-	return $wpdb->prefix . 'ae_checkin';
-}
+defined( 'ABSPATH' ) or die( '' );
 
 $ae_db_version = 2;
-function ae_install() {
+register_activation_hook( __FILE__,  function () {
 	global $wpdb;
 	global $ae_db_version;
 
-	$table_name = ae_checkin_table_name();
-
 	$charset_collate = $wpdb->get_charset_collate();
 
-	$sql = "CREATE TABLE $table_name (
+	$sql = "CREATE TABLE $wpdb->ae_checkin (
 		`id` bigint(9) NOT NULL AUTO_INCREMENT,
 		`post_id` bigint(20) UNSIGNED NOT NULL,
 		`latitude` decimal(9,6) NOT NULL,
 		`longitude` decimal(9,6) NOT NULL,
-		KEY ${table_name}_latitude (latitude),
-		KEY ${table_name}_longitude (longitude),
+		KEY {$wpdb->ae_checkin}_latitude (latitude),
+		KEY {$wpdb->ae_checkin}_longitude (longitude),
 		PRIMARY KEY (id)
 	) $charset_collate;";
 
-	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-	dbDelta($sql);
+	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+	dbDelta( $sql );
 
-	add_option('ae_db_version', $ae_db_version);
+	add_option( 'ae_db_version', $ae_db_version );
 
-	foreach (array('editor','author','contributor','subscriber','administrator') as $role_name) {
-		$role = get_role($role_name);
-		$role->add_cap('create_checkins');
+	foreach ( array( 'editor', 'author', 'contributor', 'subscriber', 'administrator' ) as $role_name ) {
+		$role = get_role( $role_name );
+		$role->add_cap( 'create_checkins' );
 	}
-}
-register_activation_hook( __FILE__, 'ae_install' );
+});
 
-function ae_update_db_check() {
-    global $ae_db_version;
-    if ( get_site_option('ae_db_version') != $ae_db_version) {
-        ae_install();
-    }
-}
-add_action('plugins_loaded', 'ae_update_db_check');
+add_action( 'plugins_loaded', function () {
+	global $ae_db_version;
+	if ( get_site_option( 'ae_db_version' ) != $ae_db_version ) {
+		ae_install();
+	}
+});
 
-function ae_insert_post($post_id, $author, $latitude, $longitude) {
+add_action('rest_insert_ae_checkin', function( $post, $request, $a ) {
 	global $wpdb;
-	$table_name = ae_checkin_table_name();
-	$posts_table_name = $wpdb->prefix . 'posts';
 
 	$wpdb->query($wpdb->prepare("
-		DELETE $table_name
-		FROM $table_name
-		JOIN $posts_table_name ON $posts_table_name.id = $table_name.post_id
-		WHERE $posts_table_name.post_author = %d
-	", $author));
+		DELETE $wpdb->ae_checkin
+		FROM $wpdb->ae_checkin
+		JOIN $wpdb->posts ON $wpdb->posts.id = {$wpdb->ae_checkin}.post_id
+		WHERE {$wpdb->posts}.post_author = %d
+	", $post->post_author));
 
-	$wpdb->insert($table_name, array(
-		'post_id' => $post_id,
-		'latitude' => (float)$latitude,
-		'longitude' => (float)$longitude,
+	$wpdb->insert($wpdb->ae_checkin, array(
+		'post_id' => $post->ID,
+		'latitude' => (float) $request['lat'],
+		'longitude' => (float) $request['lon'],
 	));
-}
-
-add_action("rest_insert_ae_checkin", function($post, $request, $a) {
-	ae_insert_post($post->ID, $post->post_author, $request['lat'], $request['lon']);
 }, 10, 3);
 
-function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
+/**
+ * Gets all checkins in a range, after a post id.
+ *
+ * @param [float,float]|null $latitudes  Minimum and maximum latitudes to include.
+ * @param [float,float]|null $longitudes Minimum and maximum longitudes to include.
+ * @param int|null           $since      Minimum post id to get. This allows polling for new checkins.
+ */
+function ae_get_posts_in_location( $latitudes, $longitudes, $since = null ) {
 	global $wpdb;
-	$cache_enabled = get_option('ae_cache_enabled');
-	$cache_key = serialize(func_get_args());
+	$cache_enabled = get_option( 'ae_cache_enabled' );
+	$cache_key = serialize( func_get_args() );
 	$cache_group = 'ae_get_posts_in_location';
 	$cache_duration = 5 * 60;
 	// If we are getting many reads, we want to invalidate one randomly to
@@ -79,19 +78,11 @@ function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 	// The keys have a short-lived duration anyway so the latency is limited
 	// also, since the $since parameter is used to keep track of the markers,
 	// all values will eventually arrive to the user.
-	if ($cache_enabled && rand(0, 100) !== 0) {
-		$cache_value = wp_cache_get($cache_key, $cache_group);
-		if ($cache_value) {
+	if ( $cache_enabled && rand( 0, 100 ) !== 0 ) {
+		$cache_value = wp_cache_get( $cache_key, $cache_group );
+		if ( $cache_value ) {
 			return $cache_value;
 		}
-	}
-
-	$table_name = ae_checkin_table_name();
-	$posts_table_name = $wpdb->prefix . 'posts';
-
-	$where = '';
-	if ($since) {
-		$where .= ' AND location.id > ' . (int)$since;
 	}
 
 	$results = $wpdb->get_results($wpdb->prepare("
@@ -100,34 +91,36 @@ function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 			location.latitude as lat,
 			location.longitude as lng,
 			posts.post_content
-		FROM $table_name location
-		JOIN $posts_table_name posts ON location.post_id = posts.ID
+		FROM $wpdb->ae_checkin location
+		JOIN $wpdb->posts posts ON location.post_id = posts.ID
 		WHERE
-			latitude BETWEEN %f and %f
+			location.latitude BETWEEN %f and %f
 		AND
-			longitude BETWEEN %f and %f
-			$where
+			location.longitude BETWEEN %f and %f
+		AND
+			location.id > %d
 		ORDER BY location.id DESC
 		LIMIT 1000
 		",
-		min($latitudes), max($latitudes),
-		min($longitudes), max($longitudes)
+		min( $latitudes ), max( $latitudes ),
+		min( $longitudes ), max( $longitudes ),
+		intval( $since )
 	));
 
 	$retval = array(
-		'since' => count($results) > 0 ? $results[0]->id : (int)$since,
-		'results' => array_map(function($p) {
+		'since' => count( $results ) > 0 ? $results[0]->id : (int) $since,
+		'results' => array_map(function( $p ) {
 			return array(
-				'lat' => (float)$p->lat,
-				'lng' => (float)$p->lng,
+				'lat' => (float) $p->lat,
+				'lng' => (float) $p->lng,
 				'post_content' => $p->post_content,
 			);
-		}, $results)
+		}, $results),
 	);
 
-	if ($cache_enabled && count($results) > 0) {
-		// we don't want to cache empty results... let's go to the db again
-		wp_cache_set($cache_key, $retval, $cache_group, $cache_duration);
+	if ( $cache_enabled && count( $results ) > 0 ) {
+		// we don't want to cache empty results... let's go to the db again.
+		wp_cache_set( $cache_key, $retval, $cache_group, $cache_duration );
 	}
 
 	return $retval;

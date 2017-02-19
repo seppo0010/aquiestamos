@@ -1,15 +1,33 @@
 <?php
-function ae_get_option($option) {
-	$r = get_option($option);
-	if ($r) {
+/**
+ * Aqui estamos plugin admin
+ *
+ * @package aquiestamos
+ * @version 1
+ */
+
+defined( 'ABSPATH' ) or die( '' );
+
+/**
+ * Gets an ae option. This can be changed by the site admin or have a plugin
+ * default.
+ *
+ * @param string $option Name of the option.
+ */
+function ae_get_option( $option ) {
+	$r = get_option( $option );
+	if ( $r ) {
 		return $r;
 	} else {
-		return array_values(array_filter(ae_settings(), function($v) use ($option) {
+		return array_values(array_filter(ae_settings(), function( $v ) use ( $option ) {
 			return $v['name'] === $option;
 		}))[0]['default'];
 	}
 }
 
+/**
+ * Lists all aquiestamos settings.
+ */
 function ae_settings() {
 	return array(
 		array(
@@ -25,13 +43,13 @@ function ae_settings() {
 			'label' => 'Map JSON styles<br />See <a href="https://developers.google.com/maps/documentation/javascript/styling">reference</a>',
 			'name' => 'ae_map_styles',
 			'type' => 'textarea',
-			'sanitize_callback' => function($value) {
-				if ($value !== '' && json_decode($value) === NULL) {
-					add_settings_error('ae_map_styles', 'ae_map_styles-invalid_json', 'JSON is invalid');
+			'sanitize_callback' => function( $value ) {
+				if ( '' !== $value && json_decode( $value ) === null ) {
+					add_settings_error( 'ae_map_styles', 'ae_map_styles-invalid_json', 'JSON is invalid' );
 					return '';
 				}
 				return $value;
-			}
+			},
 		),
 		array(
 			'label' => 'Checkin text<br />Use the property data-checkin to indicate clickable target',
@@ -68,13 +86,13 @@ function ae_settings() {
 				{"width":78,"height":78,"textColor":"black","url":"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m4.png"},
 				{"width":90,"height":90,"textColor":"black","url":"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m5.png"}
 			]}',
-			'sanitize_callback' => function($value) {
-				if ($value !== '' && json_decode($value) === NULL) {
-					add_settings_error('ae_cluster_options', 'ae_cluster_options-invalid_json', 'JSON is invalid');
+			'sanitize_callback' => function( $value ) {
+				if ( '' !== $value && json_decode( $value ) === null ) {
+					add_settings_error( 'ae_cluster_options', 'ae_cluster_options-invalid_json', 'JSON is invalid' );
 					return '';
 				}
 				return $value;
-			}
+			},
 		),
 		array(
 			'label' => 'Marker URL',
@@ -100,30 +118,30 @@ function ae_settings() {
 }
 
 add_action('admin_init', function() {
-	foreach (ae_settings() as $setting) {
-		add_option($setting['name'], '');
-		register_setting('ae_options', $setting['name'], isset($setting['sanitize_callback']) ? $setting['sanitize_callback'] : NULL);
+	foreach ( ae_settings() as $setting ) {
+		add_option( $setting['name'], '' );
+		register_setting( 'ae_options', $setting['name'], isset( $setting['sanitize_callback'] ) ? $setting['sanitize_callback'] : null );
 	}
 });
 
 add_action('admin_menu', function() {
 	add_options_page('Aqui Estamos Options', 'Aqui Estamos', 'manage_options', 'aqui-estamos', function() {
-	?>
+		?>
 	<div>
 	<?php screen_icon(); ?>
 	<h2>Aqui estamos</h2>
 	<form method="post" action="options.php">
-	<?php settings_fields('ae_options'); ?>
+	<?php settings_fields( 'ae_options' ); ?>
 	<table>
-	<?php foreach (ae_settings() as $setting) { ?>
+	<?php foreach ( ae_settings() as $setting ) { ?>
 	<tr valign="top">
 	<th scope="row"><label for="<?php echo $setting['name']; ?>"><?php echo $setting['label']; ?></label></th>
-	<?php if (isset($setting['type']) && $setting['type'] === 'checkbox') { ?>
-	<td><input type="checkbox" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="1" <?php echo ae_get_option($setting['name']) ? 'checked=""' : ''; ?> /></td>
-	<?php } elseif (isset($setting['type']) && $setting['type'] === 'textarea') { ?>
-	<td><textarea id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" cols="80" rows="6"><?php echo htmlentities(ae_get_option($setting['name']), ENT_QUOTES); ?></textarea></td>
+	<?php if ( isset( $setting['type'] ) && 'checkbox' === $setting['type']  ) { ?>
+	<td><input type="checkbox" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="1" <?php echo ae_get_option( $setting['name'] ) ? 'checked=""' : ''; ?> /></td>
+	<?php } elseif ( isset( $setting['type'] ) && 'textarea' === $setting['type'] ) { ?>
+	<td><textarea id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" cols="80" rows="6"><?php echo htmlentities( ae_get_option( $setting['name'] ), ENT_QUOTES ); ?></textarea></td>
 	<?php } else { ?>
-	<td><input type="text" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="<?php echo htmlentities(ae_get_option($setting['name']), ENT_QUOTES); ?>" /></td>
+	<td><input type="text" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="<?php echo htmlentities( ae_get_option( $setting['name'] ), ENT_QUOTES ); ?>" /></td>
 	<?php } ?>
 	</tr>
 	<?php } ?>

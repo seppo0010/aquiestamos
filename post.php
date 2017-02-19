@@ -1,15 +1,25 @@
 <?php
-defined('ABSPATH') or die('');
+/**
+ * Aqui estamos plugin post types
+ *
+ * @package Aqui estamos
+ * @version 1
+ */
 
-function create_post_type() {
+defined( 'ABSPATH' ) or die( '' );
+
+add_action( 'init', function () {
+	global $wpdb;
+	$wpdb->ae_checkin = $wpdb->prefix . 'ae_checkin';
+
 	register_post_type('ae_checkin',
 		array(
 			'capabilities' => array(
 				'create_posts' => 'create_checkins',
 			),
 			'labels' => array(
-				'name' => __('Checkins'),
-				'singular_name' => __('Checkin')
+				'name' => __( 'Checkins' ),
+				'singular_name' => __( 'Checkin' ),
 			),
 			'public' => true,
 			'has_archive' => false,
@@ -26,5 +36,4 @@ function create_post_type() {
 			),
 		)
 	);
-}
-add_action('init', 'create_post_type');
+});
