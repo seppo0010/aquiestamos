@@ -29,18 +29,29 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 	public function test_get_items() {}
 	public function test_get_item() {}
 
-	public function test_create_item() {
-		foreach ( self::$users_id as $user_id ) {
-			wp_set_current_user( $user_id );
-			$request = new WP_REST_Request( 'POST', '/ae/v1/checkin' );
-			$request->set_body_params( wp_parse_args( array(
-				'lat' => -12,
-				'lon' => 13,
-			) ) );
-			$response = $this->server->dispatch( $request );
-			$this->assertEquals( 201, $response->get_status() );
+	private function create_item( $user_id, $expect_success ) {
+		wp_set_current_user( $user_id );
+		$request = new WP_REST_Request( 'POST', '/ae/v1/checkin' );
+		$request->set_body_params( wp_parse_args( array(
+			'lat' => -12,
+			'lon' => 13,
+		) ) );
+		$response = $this->server->dispatch( $request );
+		if ($expect_success) {
+			$this->assertEquals( 201 , $response->get_status() );
+			return $response->data['id'];
+		} else {
+			$this->assertEquals( 401 , $response->get_status() );
 		}
 	}
+
+	public function test_create_item() {
+		foreach ( self::$users_id as $user_id ) {
+			$this->create_item( $user_id, true );
+		}
+		$this->create_item( 0, false );
+	}
+
 	public function test_update_item() {}
 	public function test_delete_item() {}
 	public function test_prepare_item() {}
