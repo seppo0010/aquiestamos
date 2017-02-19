@@ -125,7 +125,7 @@ add_action('admin_init', function() {
 });
 
 add_action('admin_menu', function() {
-	add_options_page('Aqui Estamos Options', 'Aqui Estamos', 'manage_options', 'aqui-estamos', function() {
+	add_options_page('Aqui Estamos Options', 'Aqui Estamos', 'manage_options', 'aquiestamos', function() {
 		?>
 	<div>
 	<?php screen_icon(); ?>

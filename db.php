@@ -9,7 +9,11 @@
 defined( 'ABSPATH' ) or die( '' );
 
 $ae_db_version = 2;
-register_activation_hook( __FILE__,  function () {
+
+/**
+ * Installs or updates aqui estamos plugin.
+ */
+function ae_install() {
 	global $wpdb;
 	global $ae_db_version;
 
@@ -34,7 +38,7 @@ register_activation_hook( __FILE__,  function () {
 		$role = get_role( $role_name );
 		$role->add_cap( 'create_checkins' );
 	}
-});
+}
 
 add_action( 'plugins_loaded', function () {
 	global $ae_db_version;

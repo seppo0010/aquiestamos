@@ -2,12 +2,12 @@
 /**
  * Aqui estamos plugin
  *
- * @package Aqui estamos
+ * @package aquiestamos
  * @version 1
  */
 
 /*
-Plugin Name: Aqui estamos
+Plugin Name: aquiestamos
 Description: Check in map
 Author: Sebastian Waisbrot
 Version: 1
@@ -21,3 +21,5 @@ require dirname( __FILE__ ) . '/js.php';
 require dirname( __FILE__ ) . '/post.php';
 require dirname( __FILE__ ) . '/rest.php';
 require dirname( __FILE__ ) . '/shortcode.php';
+
+register_activation_hook( 'aquiestamos/aquiestamos.php', 'ae_install' );

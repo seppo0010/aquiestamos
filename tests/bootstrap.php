@@ -21,5 +21,14 @@ function _manually_load_plugin() {
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
+$core_dir = rtrim( getenv( 'WP_CORE_DIR' ) ?: '/tmp/wordpress', '/' );
+$plugin_dir = dirname( dirname( __FILE__ ) );
+$plugin_name = basename( $plugin_dir );
+$target_path = $core_dir . '/wp-content/plugins/' . $plugin_name;
+if ( file_exists( $target_path ) ) {
+	unlink( $target_path );
+}
+symlink( $plugin_dir, $target_path );
+
 // Start up the WP testing environment.
 require $_tests_dir . '/includes/bootstrap.php';
