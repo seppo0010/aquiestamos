@@ -31,25 +31,41 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 
 	private function create_item( $user_id, $expect_success ) {
 		wp_set_current_user( $user_id );
+		$lat = rand(-9000, 9000) / 100;
+		$lon = rand(-18000, 18000) / 100;
 		$request = new WP_REST_Request( 'POST', '/ae/v1/checkin' );
 		$request->set_body_params( wp_parse_args( array(
-			'lat' => -12,
-			'lon' => 13,
+			'lat' => $lat,
+			'lon' => $lon,
 		) ) );
 		$response = $this->server->dispatch( $request );
 		if ($expect_success) {
 			$this->assertEquals( 201 , $response->get_status() );
-			return $response->data['id'];
+			return [
+				'id' => $response->data['id'],
+				'lat' => $lat,
+				'lon' => $lon,
+			];
 		} else {
 			$this->assertEquals( 401 , $response->get_status() );
 		}
 	}
 
 	public function test_create_item() {
-		foreach ( self::$users_id as $user_id ) {
-			$this->create_item( $user_id, true );
-		}
+		$posts = array_reverse ( array_map (function( $user_id ) {
+			$data = $this->create_item( $user_id, true );
+			return [
+				'lat' => $data['lat'],
+				'lng' => $data['lon'],
+				'post_content' => '',
+			];
+		}, self::$users_id ) );
 		$this->create_item( 0, false );
+		;
+		$this->assertEquals(
+			ae_get_posts_in_location([-90, 90], [-180, 180])['results'],
+			$posts
+		);
 	}
 
 	public function test_update_item() {}
