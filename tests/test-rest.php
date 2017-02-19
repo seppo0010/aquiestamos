@@ -91,9 +91,53 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 		);
 	}
 
+	private function _test_create_item_removes_previous_location() {
+		wp_set_current_user( self::$users_id[0] );
+		$request = new WP_REST_Request( 'POST', '/ae/v1/checkin' );
+		$request->set_body_params( wp_parse_args( array(
+			'lat' => 1,
+			'lon' => 1,
+		) ) );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 201 , $response->get_status() );
+		$this->assertContains(
+			[
+				'lat' => 1,
+				'lng' => 1,
+				'post_content' => '',
+			],
+			ae_get_posts_in_location([-90, 90], [-180, 180])['results']
+		);
+
+		$request = new WP_REST_Request( 'POST', '/ae/v1/checkin' );
+		$request->set_body_params( wp_parse_args( array(
+			'lat' => 2,
+			'lon' => 2,
+		) ) );
+		$response = $this->server->dispatch( $request );
+		$this->assertEquals( 201 , $response->get_status() );
+		$this->assertNotContains(
+			[
+				'lat' => 1,
+				'lng' => 1,
+				'post_content' => '',
+			],
+			ae_get_posts_in_location([-90, 90], [-180, 180])['results']
+		);
+		$this->assertContains(
+			[
+				'lat' => 2,
+				'lng' => 2,
+				'post_content' => '',
+			],
+			ae_get_posts_in_location([-90, 90], [-180, 180])['results']
+		);
+	}
+
 	public function test_create_item() {
 		$this->_test_create_items();
 		$this->_test_create_item_with_content();
+		$this->_test_create_item_removes_previous_location();
 	}
 
 	public function test_update_item() {}
