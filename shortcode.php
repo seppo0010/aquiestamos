@@ -24,5 +24,7 @@ add_shortcode('ae-map', function($atts) {
 		'loggedin' => !!wp_get_current_user()->ID,
 		'marker' => $marker,
 		'styles' => json_decode(get_option('ae_map_styles')),
+		'cluster_prefix' => ae_get_option('ae_cluster_prefix'),
+		'cluster_suffix' => ae_get_option('ae_cluster_suffix'),
 	)) . ');</script>';
 });

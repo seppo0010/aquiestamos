@@ -52,6 +52,16 @@ function ae_settings() {
 			'default' => 'Thanks for checkin in.<br />[TheChamp-Sharing]',
 		),
 		array(
+			'label' => 'Cluster Image Prefix<br />Base url for cluster images. E.g.:<br />/images/myimage<br />will use /images/myimage1.png, /images/myimage2.png, ... /images/myimage5.png',
+			'name' => 'ae_cluster_prefix',
+			'default' => 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+		),
+		array(
+			'label' => 'Cluster Image Suffix',
+			'name' => 'ae_cluster_suffix',
+			'default' => 'png',
+		),
+		array(
 			'label' => 'Marker URL',
 			'name' => 'ae_marker_url',
 		),

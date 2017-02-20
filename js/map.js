@@ -150,7 +150,8 @@
             styles: settings.styles,
         });
         markerCluster = new MarkerClusterer(map, [], {
-            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+            imagePath: settings.cluster_prefix,
+            imageExtension: settings.cluster_suffix,
         });
         aeAddLocations(locations);
         if (checkinAfterInit) {
