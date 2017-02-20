@@ -149,10 +149,7 @@
             center: {lat: -35.376184, lng: -63.998128},
             styles: settings.styles,
         });
-        markerCluster = new MarkerClusterer(map, [], {
-            imagePath: settings.cluster_prefix,
-            imageExtension: settings.cluster_suffix,
-        });
+        markerCluster = new MarkerClusterer(map, [], settings.cluster_options);
         aeAddLocations(locations);
         if (checkinAfterInit) {
             aeDoCheckin();

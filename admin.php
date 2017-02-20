@@ -52,14 +52,23 @@ function ae_settings() {
 			'default' => 'Thanks for checkin in.<br />[TheChamp-Sharing]',
 		),
 		array(
-			'label' => 'Cluster Image Prefix<br />Base url for cluster images. E.g.:<br />/images/myimage<br />will use /images/myimage1.png, /images/myimage2.png, ... /images/myimage5.png',
-			'name' => 'ae_cluster_prefix',
-			'default' => 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-		),
-		array(
-			'label' => 'Cluster Image Suffix',
-			'name' => 'ae_cluster_suffix',
-			'default' => 'png',
+			'label' => 'Marker Cluster optoins<br />JSON opt_options object to send to <a href="http://htmlpreview.github.io/?https://github.com/googlemaps/v3-utility-library/blob/master/markerclusterer/docs/reference.html" target="_blank">MarkerClusterer</a>',
+			'name' => 'ae_cluster_options',
+			'type' => 'textarea',
+			'default' => '{"styles":[
+				{"width":53,"height":53,"textColor":"black","url":"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m1.png"},
+				{"width":56,"height":56,"textColor":"black","url":"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m2.png"},
+				{"width":66,"height":66,"textColor":"black","url":"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m3.png"},
+				{"width":78,"height":78,"textColor":"black","url":"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m4.png"},
+				{"width":90,"height":90,"textColor":"black","url":"https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m5.png"}
+			]}',
+			'sanitize_callback' => function($value) {
+				if ($value !== '' && json_decode($value) === NULL) {
+					add_settings_error('ae_cluster_options', 'ae_cluster_options-invalid_json', 'JSON is invalid');
+					return '';
+				}
+				return $value;
+			}
 		),
 		array(
 			'label' => 'Marker URL',
