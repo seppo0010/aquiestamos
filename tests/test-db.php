@@ -1,6 +1,17 @@
 <?php
 class AEDbTest extends WP_UnitTestCase {
 
+	const PLUGIN = 'aquiestamos/aquiestamos.php';
+
+	public static function wpSetUpBeforeClass( $factory ) {
+		if ( ! is_plugin_active( self::PLUGIN ) ) {
+			activate_plugin( self::PLUGIN );
+			if ( ! is_plugin_active( self::PLUGIN ) ) {
+				throw new Exception( 'Unable to activate plugin' );
+			}
+		}
+	}
+
 	private function get_describe() {
 		global $wpdb;
 		return array_map(
