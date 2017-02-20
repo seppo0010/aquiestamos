@@ -87,6 +87,7 @@
                     mapDefaults = {
                         zoom: zoom,
                         center: center
+                        styles: settings.styles,
                     };
                 }
             }
@@ -120,6 +121,7 @@
                 mapDefaults = {
                     zoom: parseFloat(cookieData.zoom),
                     center: {lat: cookieData.lat, lng: cookieData.lng},
+                    styles: settings.styles,
                 };
                 aeSetCheckinText(cookieData.checkinText);
                 checkinAfterInit = true;
