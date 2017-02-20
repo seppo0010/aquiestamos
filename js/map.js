@@ -86,7 +86,7 @@
                 } else {
                     mapDefaults = {
                         zoom: zoom,
-                        center: center
+                        center: center,
                         styles: settings.styles,
                     };
                 }
