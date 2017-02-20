@@ -117,7 +117,7 @@
                 if (end === -1) {
                     end = cookie.length;
                 }
-                var cookieData = JSON.parse(unescape(cookie.substr(start + key.length, end)));
+                var cookieData = JSON.parse(unescape(cookie.substr(start + key.length, end - start + key.length)));
                 mapDefaults = {
                     zoom: parseFloat(cookieData.zoom),
                     center: {lat: cookieData.lat, lng: cookieData.lng},
