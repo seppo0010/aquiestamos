@@ -87,6 +87,7 @@ function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 	}
 
 	$table_name = ae_checkin_table_name();
+	$posts_table_name = $wpdb->prefix . 'posts';
 
 	$where = '';
 	if ($since) {
@@ -95,10 +96,12 @@ function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 
 	$results = $wpdb->get_results($wpdb->prepare("
 		SELECT
-			id,
-			latitude as lat,
-			longitude as lng
-		FROM $table_name
+			location.id,
+			location.latitude as lat,
+			location.longitude as lng,
+			posts.post_content
+		FROM $table_name location
+		JOIN $posts_table_name posts ON location.post_id = posts.ID
 		WHERE
 			latitude BETWEEN %f and %f
 		AND
@@ -114,7 +117,11 @@ function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 	$retval = array(
 		'since' => count($results) > 0 ? $results[0]->id : (int)$since,
 		'results' => array_map(function($p) {
-			return array('lat' => (float)$p->lat, 'lng' => (float)$p->lng);
+			return array(
+				'lat' => (float)$p->lat,
+				'lng' => (float)$p->lng,
+				'post_content' => $p->post_content,
+			);
 		}, $results)
 	);
 

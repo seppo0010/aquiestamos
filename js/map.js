@@ -8,6 +8,7 @@
     var since = null;
     var icon = null;
     var cookieName = 'ae_checkin_location';
+    var openwindow = null;
 
     window.aeMapReady = function() {
         mapReady = true;
@@ -137,10 +138,34 @@
 
     function aeAddLocations(locations) {
         markerCluster.addMarkers(locations.map(function(location) {
-            return new google.maps.Marker({
+            var infowindow;
+            if (settings.checkin_html) {
+                var post_content = $('<div>').text(location.post_content || '').html();
+                var html = settings.checkin_html.replace(/\[ae-checkin-text\]/g, post_content);
+                if (html) {
+                    infowindow  = new google.maps.InfoWindow({
+                        content: html,
+                    });
+                }
+            }
+            var marker = new google.maps.Marker({
                 position: location,
                 icon: icon,
             });
+            google.maps.event.addListener(marker, 'click', function() {
+                if (infowindow) {
+                    infowindow.open(map, marker);
+                }
+                if (openwindow) {
+                    openwindow.close();
+                }
+                if (openwindow === infowindow) {
+                    openwindow = null;
+                } else {
+                    openwindow = infowindow;
+                }
+            });
+            return marker;
         }));
     }
     function aeInitMap(locations) {
