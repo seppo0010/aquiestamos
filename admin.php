@@ -58,7 +58,7 @@ function ae_settings() {
 			'default' => '[ae-checkin-text]',
 		),
 		array(
-			'label' => 'Marker Cluster optoins<br />JSON opt_options object to send to <a href="http://htmlpreview.github.io/?https://github.com/googlemaps/v3-utility-library/blob/master/markerclusterer/docs/reference.html" target="_blank">MarkerClusterer</a>',
+			'label' => 'Marker Cluster options<br />JSON opt_options object to send to <a href="http://htmlpreview.github.io/?https://github.com/googlemaps/v3-utility-library/blob/master/markerclusterer/docs/reference.html" target="_blank">MarkerClusterer</a>',
 			'name' => 'ae_cluster_options',
 			'type' => 'textarea',
 			'default' => '{"styles":[
