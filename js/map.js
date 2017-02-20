@@ -4,7 +4,6 @@
     var settings = null;
     var mapDefaults = null;;
     var markerCluster = null;
-    var checkinAfterInit = false;
     var since = null;
     var icon = null;
 
@@ -102,7 +101,6 @@
                         zoom: parseFloat(coords[2]),
                         center: {lat: parseFloat(coords[0]), lng: parseFloat(coords[1])},
                     };
-                    checkinAfterInit = true;
                 }
                 document.cookie = 'ae_checkin_location=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/'
             }
@@ -135,8 +133,5 @@
             imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
         });
         aeAddLocations(locations);
-        if (checkinAfterInit) {
-            aeDoCheckin();
-        }
     }
 })();
