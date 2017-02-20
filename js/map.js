@@ -95,8 +95,9 @@
     }
 
     function aePollLocations() {
+        var separator = settings.base_url.indexOf('?') === -1 ? '?' : '&';
         $.ajax({
-            url: settings.base_url + 'ae/v1/checkin?since=' + (since || ''),
+            url: settings.base_url + 'ae/v1/checkin' + separator + 'since=' + (since || ''),
             headers: {'x-wp-nonce':settings.nonce},
         }).done(function (response) {
             since = response.since;
