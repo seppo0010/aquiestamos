@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) or die( '' );
 
-$ae_db_version = 2;
+$ae_db_version = 3;
 
 /**
  * Installs or updates aqui estamos plugin.
