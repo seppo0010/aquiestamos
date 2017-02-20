@@ -117,14 +117,17 @@
                 if (end === -1) {
                     end = cookie.length;
                 }
-                var cookieData = JSON.parse(unescape(cookie.substr(start + key.length, end - start + key.length)));
-                mapDefaults = {
-                    zoom: parseFloat(cookieData.zoom),
-                    center: {lat: cookieData.lat, lng: cookieData.lng},
-                    styles: settings.styles,
-                };
-                aeSetCheckinText(cookieData.checkinText);
-                checkinAfterInit = true;
+                try {
+                    var cookieData = JSON.parse(unescape(cookie.substr(start + key.length, end - start + key.length)));
+                    mapDefaults = {
+                        zoom: parseFloat(cookieData.zoom),
+                        center: {lat: cookieData.lat, lng: cookieData.lng},
+                        styles: settings.styles,
+                    };
+                    aeSetCheckinText(cookieData.checkinText);
+                    checkinAfterInit = true;
+                } catch (e) {
+                }
                 document.cookie = cookieName + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/'
             }
         }
