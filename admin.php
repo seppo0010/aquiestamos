@@ -1,4 +1,15 @@
 <?php
+function ae_get_option($option) {
+	$r = get_option($option);
+	if ($r) {
+		return $r;
+	} else {
+		return array_values(array_filter(ae_settings(), function($v) use ($option) {
+			return $v['name'] === $option;
+		}))[0]['default'];
+	}
+}
+
 function ae_settings() {
 	return array(
 		array(
@@ -15,12 +26,30 @@ function ae_settings() {
 			'name' => 'ae_map_styles',
 			'type' => 'textarea',
 			'sanitize_callback' => function($value) {
-				if (json_decode($value) === NULL) {
+				if ($value !== '' && json_decode($value) === NULL) {
 					add_settings_error('ae_map_styles', 'ae_map_styles-invalid_json', 'JSON is invalid');
 					return '';
 				}
 				return $value;
 			}
+		),
+		array(
+			'label' => 'Checkin text<br />Use the property data-checkin to indicate clickable target',
+			'name' => 'ae_checkin_text',
+			'type' => 'textarea',
+			'default' => '<a data-checkin href="#">Check in</a>',
+		),
+		array(
+			'label' => 'Login text<br />Use [TheChamp-Login] to include super-socializer login methods',
+			'name' => 'ae_login_text',
+			'type' => 'textarea',
+			'default' => '[TheChamp-Login]',
+		),
+		array(
+			'label' => 'Thanks text<br />Use [TheChamp-Sharing] to prompt for super-socializer sharing',
+			'name' => 'ae_thanks_text',
+			'type' => 'textarea',
+			'default' => 'Thanks for checkin in.<br />[TheChamp-Sharing]',
 		),
 		array(
 			'label' => 'Marker URL',
@@ -65,11 +94,11 @@ add_action('admin_menu', function() {
 	<tr valign="top">
 	<th scope="row"><label for="<?php echo $setting['name']; ?>"><?php echo $setting['label']; ?></label></th>
 	<?php if (isset($setting['type']) && $setting['type'] === 'checkbox') { ?>
-	<td><input type="checkbox" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="1" <?php echo get_option($setting['name']) ? 'checked=""' : ''; ?> /></td>
+	<td><input type="checkbox" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="1" <?php echo ae_get_option($setting['name']) ? 'checked=""' : ''; ?> /></td>
 	<?php } elseif (isset($setting['type']) && $setting['type'] === 'textarea') { ?>
-	<td><textarea id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" cols="80" rows="6"><?php echo htmlentities(get_option($setting['name']), ENT_QUOTES); ?></textarea></td>
+	<td><textarea id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" cols="80" rows="6"><?php echo htmlentities(ae_get_option($setting['name']), ENT_QUOTES); ?></textarea></td>
 	<?php } else { ?>
-	<td><input type="text" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="<?php echo htmlentities(get_option($setting['name']), ENT_QUOTES); ?>" /></td>
+	<td><input type="text" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="<?php echo htmlentities(ae_get_option($setting['name']), ENT_QUOTES); ?>" /></td>
 	<?php } ?>
 	</tr>
 	<?php } ?>

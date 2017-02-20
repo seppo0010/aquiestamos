@@ -14,9 +14,9 @@ add_shortcode('ae-map', function($atts) {
 	return
 	'<div id="ae_map_container" style="' . (!empty($atts['style']) ? $atts['style'] : '') . '">' .
 	'<div id="ae_map"></div>' .
-	'<div id="ae_checkin"><a href="javascript:void(null)">Aqu&iacute; estoy</a></div>' .
-	'<div id="ae_login">' . do_shortcode('[TheChamp-Login]') . '</div>' .
-	'<div id="ae_thanks">Gracias ' . do_shortcode('[TheChamp-Sharing]') . '</div>' .
+	'<div id="ae_checkin">' . do_shortcode(ae_get_option('ae_checkin_text')) . '</div>' .
+	'<div id="ae_login">' . do_shortcode(ae_get_option('ae_login_text')) . '</div>' .
+	'<div id="ae_thanks">' . do_shortcode(ae_get_option('ae_thanks_text')) . '</div>' .
 	'</div>' .
 	'<script>aeSettings(' . json_encode(array(
 		'nonce' => wp_create_nonce('wp_rest'),
