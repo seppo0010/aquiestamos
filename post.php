@@ -16,6 +16,7 @@ add_action( 'init', function () {
 		array(
 			'capabilities' => array(
 				'create_posts' => 'create_checkins',
+				'publish_posts' => 'publish_checkins',
 			),
 			'labels' => array(
 				'name' => __( 'Checkins' ),

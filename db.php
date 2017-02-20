@@ -8,7 +8,7 @@
 
 defined( 'ABSPATH' ) or die( '' );
 
-$ae_db_version = 3;
+$ae_db_version = 4;
 
 /**
  * Installs or updates aqui estamos plugin.
@@ -37,6 +37,7 @@ function ae_install() {
 	foreach ( array( 'editor', 'author', 'contributor', 'subscriber', 'administrator' ) as $role_name ) {
 		$role = get_role( $role_name );
 		$role->add_cap( 'create_checkins' );
+		$role->add_cap( 'publish_checkins' );
 	}
 }
 

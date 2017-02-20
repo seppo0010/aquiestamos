@@ -78,6 +78,7 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 			'lat' => $lat,
 			'lon' => $lon,
 			'content' => $post_content,
+			'status' => 'publish',
 		) ) );
 		$response = $this->server->dispatch( $request );
 		$this->assertEquals( 201 , $response->get_status() );
