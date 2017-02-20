@@ -20,6 +20,7 @@ function create_post_type() {
 			'show_in_admin_bar' => false,
 			'rest_controller_class' => 'WP_REST_Checkin_Controller',
 			'supports' => array(
+				'editor',
 				'author',
 				'description',
 			),
