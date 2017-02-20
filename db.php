@@ -91,7 +91,7 @@ function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 
 	$where = '';
 	if ($since) {
-		$where .= ' AND id > ' . (int)$since;
+		$where .= ' AND location.id > ' . (int)$since;
 	}
 
 	$results = $wpdb->get_results($wpdb->prepare("
@@ -107,7 +107,7 @@ function ae_get_posts_in_location($latitudes, $longitudes, $since = NULL) {
 		AND
 			longitude BETWEEN %f and %f
 			$where
-		ORDER BY id DESC
+		ORDER BY location.id DESC
 		LIMIT 1000
 		",
 		min($latitudes), max($latitudes),
