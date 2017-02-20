@@ -14,3 +14,9 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_script( 'ae_script_marker_clusterer', 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js' );
 	wp_enqueue_script( 'ae_script_api_js', "https://maps.googleapis.com/maps/api/js?key=$googlemapskey&callback=aeMapReady", array( 'ae_script_js_map' ) );
 });
+
+add_action('after_setup_theme', function () {
+	if ( ! current_user_can( 'administrator' ) && ! is_admin( ) ) {
+		show_admin_bar( false );
+	}
+});
