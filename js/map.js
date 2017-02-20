@@ -38,7 +38,7 @@
             new google.maps.Point(0, 0),
             new google.maps.Point(settings.marker.vertexX, settings.marker.vertexY)
         ) : null;
-        jQuery('#ae_checkin').click(function(evt) {
+        jQuery('#ae_checkin [data-checkin]').click(function(evt) {
             evt.preventDefault();
             if (settings.loggedin) {
                 aeDoCheckin();
