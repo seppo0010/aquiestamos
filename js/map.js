@@ -178,6 +178,7 @@
     }
     function aeInitMap(locations) {
         map = new google.maps.Map(document.getElementById('ae_map'), mapDefaults || {
+            streetViewControl: false,
             zoom: 4,
             center: {lat: -35.376184, lng: -63.998128},
             styles: settings.styles,
