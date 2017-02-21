@@ -70,10 +70,10 @@ function ae_settings() {
 			'default' => 'Thanks for checkin in.<br />[TheChamp-Sharing]',
 		),
 		array(
-			'label' => 'Checkin HTML',
+			'label' => 'Checkin HTML<br />Use [ae-checkin-text] for user submitted content',
 			'name' => 'ae_checkin_html',
 			'type' => 'textarea',
-			'default' => '[ae-checkin-text]',
+			'default' => '',
 		),
 		array(
 			'label' => 'Marker Cluster options<br />JSON opt_options object to send to <a href="http://htmlpreview.github.io/?https://github.com/googlemaps/v3-utility-library/blob/master/markerclusterer/docs/reference.html" target="_blank">MarkerClusterer</a>',
