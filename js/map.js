@@ -87,7 +87,6 @@
                     mapDefaults = {
                         zoom: zoom,
                         center: center,
-                        styles: settings.styles,
                     };
                 }
             }
@@ -123,7 +122,6 @@
                     mapDefaults = {
                         zoom: parseFloat(cookieData.zoom),
                         center: {lat: cookieData.lat, lng: cookieData.lng},
-                        styles: settings.styles,
                     };
                     aeSetCheckinText(cookieData.checkinText);
                     if (settings.loggedin) {
@@ -177,12 +175,13 @@
         }));
     }
     function aeInitMap(locations) {
-        map = new google.maps.Map(document.getElementById('ae_map'), mapDefaults || {
+        var options = mapDefaults || {
             streetViewControl: false,
             zoom: 4,
             center: {lat: -35.376184, lng: -63.998128},
-            styles: settings.styles,
-        });
+        };
+        options.styles = settings.styles;
+        map = new google.maps.Map(document.getElementById('ae_map'), options);
         markerCluster = new MarkerClusterer(map, [], settings.cluster_options);
         aeAddLocations(locations);
         if (checkinAfterInit) {
