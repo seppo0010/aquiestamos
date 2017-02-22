@@ -52,6 +52,7 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 	}
 
 	private function _test_create_items() {
+		$count = ae_count_checkins( );
 		$posts = array_reverse( array_map(function( $user_id ) {
 			$data = $this->create_item( $user_id, true );
 			return [
@@ -66,6 +67,7 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 			ae_get_posts_in_location( [ -90, 90 ], [ -180, 180 ] )['results'],
 			$posts
 		);
+		$this->assertEquals($count + count( $posts ), ae_count_checkins( ) );
 	}
 
 	private function _test_create_item_with_content() {

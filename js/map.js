@@ -100,6 +100,7 @@
             headers: {'x-wp-nonce':settings.nonce},
         }).done(function (response) {
             since = response.since;
+            $('.ae-count').text(response.count);
             aeAddLocations(response.results);
         });
     }

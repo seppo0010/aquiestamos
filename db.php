@@ -66,6 +66,37 @@ add_action('rest_insert_ae_checkin', function( $post, $request, $a ) {
 }, 10, 3);
 
 /**
+ * Gets the number of checkins
+ */
+function ae_count_checkins() {
+	global $wpdb;
+	$cache_enabled = get_option( 'ae_cache_enabled' );
+	$cache_key = '';
+	$cache_group = 'ae_count_checkins';
+	$cache_duration = 1 * 60;
+
+	if ( $cache_enabled && rand( 0, 100 ) !== 0 ) {
+		$cache_value = wp_cache_get( $cache_key, $cache_group );
+		if ( $cache_value ) {
+			return $cache_value;
+		}
+	}
+
+	$retval = $wpdb->get_var("
+		SELECT
+			COUNT(*)
+		FROM $wpdb->ae_checkin location
+		"
+	);
+
+	if ( $cache_enabled ) {
+		wp_cache_set( $cache_key, $retval, $cache_group, $cache_duration );
+	}
+
+	return $retval;
+}
+
+/**
  * Gets all checkins in a range, after a post id.
  *
  * @param [float,float]|null $latitudes  Minimum and maximum latitudes to include.
@@ -113,6 +144,7 @@ function ae_get_posts_in_location( $latitudes, $longitudes, $since = null ) {
 	));
 
 	$retval = array(
+		'count' => ae_count_checkins( ),
 		'since' => count( $results ) > 0 ? $results[0]->id : (int) $since,
 		'results' => array_map(function( $p ) {
 			return array(

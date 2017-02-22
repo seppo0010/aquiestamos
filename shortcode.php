@@ -37,3 +37,7 @@ add_shortcode('ae-map', function( $atts ) {
 		'checkin_html' => ae_get_option( 'ae_checkin_html' ),
 	)) . ');</script>';
 });
+
+add_shortcode('ae-count', function( $atts ) {
+	return '<span class="ae-count">' . ae_count_checkins( ) . '</span>';
+});
