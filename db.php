@@ -152,7 +152,7 @@ function ae_get_posts_in_location( $latitudes, $longitudes, $since = null ) {
 				'lat' => (float) $p->lat,
 				'lng' => (float) $p->lng,
 				'post_content' => $p->post_content,
-				'current_user' => $p->post_author == wp_get_current_user( )->ID,
+				'current_user' => wp_get_current_user( )->ID == $p->post_author,
 			);
 		}, $results),
 	);

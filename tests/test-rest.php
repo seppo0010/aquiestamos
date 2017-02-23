@@ -91,6 +91,7 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 				'lat' => $lat,
 				'lng' => $lon,
 				'post_content' => $post_content,
+				'current_user' => true,
 			],
 			ae_get_posts_in_location( [ -90, 90 ], [ -180, 180 ] )['results']
 		);
@@ -110,6 +111,7 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 				'lat' => 1,
 				'lng' => 1,
 				'post_content' => '',
+				'current_user' => true,
 			],
 			ae_get_posts_in_location( [ -90, 90 ], [ -180, 180 ] )['results']
 		);
@@ -126,6 +128,7 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 				'lat' => 1,
 				'lng' => 1,
 				'post_content' => '',
+				'current_user' => true,
 			],
 			ae_get_posts_in_location( [ -90, 90 ], [ -180, 180 ] )['results']
 		);
@@ -134,6 +137,7 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 				'lat' => 2,
 				'lng' => 2,
 				'post_content' => '',
+				'current_user' => true,
 			],
 			ae_get_posts_in_location( [ -90, 90 ], [ -180, 180 ] )['results']
 		);
