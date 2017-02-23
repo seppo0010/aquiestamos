@@ -15,6 +15,13 @@
         aeFetchLocations();
     }
 
+    $(function() {
+        $('body').on('click', '[data-ae-close]', function(e) {
+            e.preventDefault();
+            $('.ae_modal').hide();
+        });
+    });
+
     function aeDoCheckin() {
         $('#ae_login').hide();
         $('#ae_checkin').hide();
