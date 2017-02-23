@@ -59,10 +59,12 @@ class AERestTest extends WP_Test_REST_Controller_Testcase {
 				'lat' => $data['lat'],
 				'lng' => $data['lon'],
 				'post_content' => '',
+				'current_user' => $user_id === self::$users_id[0],
 			];
 		}, self::$users_id ) );
 		$this->create_item( 0, false );
-		;
+
+		wp_set_current_user( self::$users_id[0] );
 		$this->assertEquals(
 			ae_get_posts_in_location( [ -90, 90 ], [ -180, 180 ] )['results'],
 			$posts

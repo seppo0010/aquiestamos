@@ -126,6 +126,7 @@ function ae_get_posts_in_location( $latitudes, $longitudes, $since = null ) {
 			location.id,
 			location.latitude as lat,
 			location.longitude as lng,
+			posts.post_author,
 			posts.post_content
 		FROM $wpdb->ae_checkin location
 		JOIN $wpdb->posts posts ON location.post_id = posts.ID
@@ -151,6 +152,7 @@ function ae_get_posts_in_location( $latitudes, $longitudes, $since = null ) {
 				'lat' => (float) $p->lat,
 				'lng' => (float) $p->lng,
 				'post_content' => $p->post_content,
+				'current_user' => $p->post_author == wp_get_current_user( )->ID,
 			);
 		}, $results),
 	);
