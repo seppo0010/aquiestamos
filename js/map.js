@@ -7,6 +7,7 @@
     var checkinAfterInit = false;
     var since = null;
     var icon = null;
+    var myIcon = null;
     var cookieName = 'ae_checkin_location';
     var openwindow = null;
 
@@ -57,6 +58,11 @@
             new google.maps.Size(settings.marker.width, settings.marker.height),
             new google.maps.Point(0, 0),
             new google.maps.Point(settings.marker.vertexX, settings.marker.vertexY)
+        ) : null;
+        myIcon = settings.my_marker ? new google.maps.MarkerImage(settings.my_marker.url,
+            new google.maps.Size(settings.my_marker.width, settings.my_marker.height),
+            new google.maps.Point(0, 0),
+            new google.maps.Point(settings.my_marker.vertexX, settings.my_marker.vertexY)
         ) : null;
         var handleCheckin = function(evt) {
             evt.preventDefault();
@@ -151,10 +157,10 @@
     };
 
     function aeAddLocations(locations) {
-        markerCluster.addMarkers(locations.map(function(location) {
+        markerCluster.addMarkers(locations.map(function(post) {
             var infowindow;
             if (settings.checkin_html) {
-                var post_content = $('<div>').text(location.post_content || '').html();
+                var post_content = $('<div>').text(post.post_content || '').html();
                 var html = settings.checkin_html.replace(/\[ae-checkin-text\]/g, post_content);
                 if (html) {
                     infowindow  = new google.maps.InfoWindow({
@@ -163,8 +169,11 @@
                 }
             }
             var marker = new google.maps.Marker({
-                position: location,
-                icon: icon,
+                position: {
+                    lat: post.lat,
+                    lng: post.lng,
+                },
+                icon: post.current_user ? myIcon : icon,
             });
             google.maps.event.addListener(marker, 'click', function() {
                 if (infowindow) {

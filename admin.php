@@ -114,6 +114,26 @@ function ae_settings() {
 			'label' => 'Marker vertex y',
 			'name' => 'ae_marker_vertexY',
 		),
+		array(
+			'label' => 'Own Marker URL',
+			'name' => 'ae_my_marker_url',
+		),
+		array(
+			'label' => 'Own Marker width',
+			'name' => 'ae_my_marker_width',
+		),
+		array(
+			'label' => 'Own Marker height',
+			'name' => 'ae_my_marker_height',
+		),
+		array(
+			'label' => 'Own Marker vertex x',
+			'name' => 'ae_my_marker_vertexX',
+		),
+		array(
+			'label' => 'Own Marker vertex y',
+			'name' => 'ae_my_marker_vertexY',
+		),
 	);
 }
 

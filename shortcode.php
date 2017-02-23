@@ -19,6 +19,17 @@ add_shortcode('ae-map', function( $atts ) {
 	if ( empty( $marker['url'] ) || empty( $marker['width'] ) || empty( $marker['height'] ) ) {
 		$marker = null;
 	}
+
+	$my_marker = array(
+		'url' => get_option( 'ae_my_marker_url' ),
+		'width' => (int) get_option( 'ae_my_marker_width' ),
+		'height' => (int) get_option( 'ae_my_marker_height' ),
+		'vertexX' => (int) get_option( 'ae_my_marker_vertexX' ),
+		'vertexY' => (int) get_option( 'ae_my_marker_vertexY' ),
+	);
+	if ( empty( $my_marker['url'] ) || empty( $my_marker['width'] ) || empty( $my_marker['height'] ) ) {
+		$my_marker = null;
+	}
 	wp_enqueue_style( 'ae-css', plugins_url( 'css/main.css', __FILE__ ), false, '1' );
 	return
 	'<div id="ae_map_container" style="' . ( ! empty( $atts['style'] ) ? $atts['style'] : '') . '">' .
@@ -32,6 +43,7 @@ add_shortcode('ae-map', function( $atts ) {
 		'base_url' => get_rest_url(),
 		'loggedin' => ! ! wp_get_current_user()->ID,
 		'marker' => $marker,
+		'my_marker' => $my_marker,
 		'styles' => json_decode( get_option( 'ae_map_styles' ) ),
 		'cluster_options' => json_decode( ae_get_option( 'ae_cluster_options' ) ),
 		'checkin_html' => ae_get_option( 'ae_checkin_html' ),
