@@ -132,7 +132,7 @@
                     end = cookie.length;
                 }
                 try {
-                    var cookieData = JSON.parse(unescape(cookie.substr(start + key.length, end - start + key.length)));
+                    var cookieData = JSON.parse(unescape(cookie.substr(start + key.length, end - start - key.length)));
                     mapDefaults = {
                         zoom: parseFloat(cookieData.zoom),
                         center: {lat: cookieData.lat, lng: cookieData.lng},
