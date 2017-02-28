@@ -1,0 +1,13 @@
+{
+  "server": "hub-cloud.browserstack.com",
+
+  "capabilities": {
+    "browserstack.local": true,
+    "browserstack.debug": true
+  },
+
+  "environments": [{
+    "browser": "chrome"
+  }]
+}
+

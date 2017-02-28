@@ -7,26 +7,41 @@ notifications:
 
 php: 5.6
 
-env:
-  - WP_VERSION=latest WP_MULTISITE=0
+cache:
+  directories:
+    - $HOME/.composer/cache
+    - $HOME/vendor
 
-matrix:
-  include:
-      env: WP_VERSION=latest WP_MULTISITE=1
+env:
+  global:
+  - secure: "dI3+CmUDM3t90YGLlnAc/dNQsqRKkDoLVAUg8y/Fj708MCV36wxeqNhlUA9FPeCOiCiRtk1cMXcDvJygRXrAJbcxMPCHEj7pMCoIFjOjjJTQ/+7sqJBZMAW/lmKqdVmN7bkE5C24ZneFVj6/OC+Ioj5NKwCFjjLVp9p0P2c+2X6nsvUXeCsrWv+kz+oMRkmj2L7O4dpj4UNS4vQrFHDo4MH57DUFV8+iv6lNEKI48UKbh+9xGd03jWfT7TyPeh6xDI31Ej68X82iYAL54zJT1HaVaW7ASj3Sc82jwjUhlAvrov4AcXGzmMtOHyAHylbqNAJmvwOrN0fChPMTHtrGoO2JPGjUJcZsnVNUGFa3/hsdMrcgIHbMGM3GKn2FwaupanwjmN+zvLOn+txn4kk1t+HT5JP31KY/KgJmIh5yf+/NSFI/Sbm6y1Y5+wQuZ7x/ZqDcFFh0gEm4VILw7RE4tXkK3OqcMAYRZuWZsgUg84GCfeEGLmYpqz/8GBW4hwm2HjaETlUVU44Fvf3ioNz0wytDN5blL4mY0ru74P8lEBCakXPDgeYvPURIbG16PcR33KG02EIBFL53f1kdM1A/sZGIbxhaWJPZc4da91jpqD3jkWSlXBVPAL6dce4t0tijmWWU10sOitWLuIOePa/eagDd3U9Mz+2qJK540c5rL38="
+  - secure: "L5/NpACGFI/g7P+SQjr+FGg+ohm8VryjUzEPCzyrsYVeFQ2gjU1+8EHxNbxvK+cHt3It89pAESA/SO5pEiPnGRkr+gupcX1hL5fd3mb6/qBkFjTZiTnx8sihN1sNn8iRvUzKChH22r5hV483lttD0eWnYur1Jip72D7R6mb8V60Pv1+1V7/eEFK3UN+1+GBnk7GjYvUETWSr5NRd7bhx8jKHP5xMgzbIOfUMExgNOh+TtaaU7WRWFbAk7vQEDgDWjiW/CP6Pvu9UO/+QoXAtvnFLUkh73zz68TA4Szen2GTxRWGFS8i27Nhz7veQVjJ/DTBHKaMgpBrv2Ci3+Ln+cTsaOu1c9lrl64JfqQC9HpXAzMIuEOPlSrNEYzqgqFTZrKcBACT9n4S3Zp8kkCNLxv2X4BO2XSrJOTceDJIVfu/isYNoX6cC2ZcBh3O0w/9uH7ybvsUzIv1PQJ9BQvdFrIf2MPBPTNEfL9IRTTjCcMMD2Eyas2uFBLS8HDo9hR9m7oIeX41wTB33F2PhLtxuJhhILK/kQhKKAxvWSVmHNphDbcc0SML+utoB//RQZ6W3cVgg18sty9MALr3vLnv8e4ZwnHoHJ/oV83CgOovv1DNICzCrQb1Hhj1a6+lQ8+OXp324HhFu4TqslKTtnxK8jkWC1QRciTNvs8rNNLq84+I="
+  matrix:
+  - WP_VERSION=latest WP_MULTISITE=0 BROWSERSTACK=0
+  - WP_VERSION=latest WP_MULTISITE=1 BROWSERSTACK=0
+  - WP_VERSION=latest WP_MULTISITE=0 BROWSERSTACK=1
 
 before_script:
   - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - |
     if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-      composer global require "phpunit/phpunit=5.7.*"
+      composer require "phpunit/phpunit=5.7.*"
+      composer require "phpunit/phpunit-selenium=3.*"
     else
-      composer global require "phpunit/phpunit=4.8.*"
+      composer require "phpunit/phpunit=4.8.*"
+      composer require "phpunit/phpunit-selenium=2.*"
     fi
   - |
-    composer global require wp-coding-standards/wpcs
-    phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs
+    if [[ $BROWSERSTACK == "0" ]]; then
+      ./tests/bootstrap.sh
+    else
+      ./tests-browserstack/bootstrap.sh
+    fi
 
 script:
-  - phpcs --standard=phpcs.ruleset.xml $(find . -name '*.php' | grep -vw tests)
+  - |
+    if [[ $BROWSERSTACK == "0" ]]; then
+      phpcs --standard=phpcs.ruleset.xml $(find . -name '*.php' | grep -vw tests |grep -vw tests-browserstack)
+    fi
   - phpunit
