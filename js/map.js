@@ -16,6 +16,29 @@
         aeFetchLocations();
     }
 
+    var getLocation = function() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var center = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                var zoom = 15;
+                if (!mapDefaults) {
+                    if (map) {
+                        map.panTo(center);
+                        map.setZoom(zoom);
+                    } else {
+                        mapDefaults = {
+                            zoom: zoom,
+                            center: center,
+                        };
+                    }
+                }
+            });
+        }
+    }
+
     $(function() {
         $('body').on('click', '[data-ae-close]', function(e) {
             e.preventDefault();
@@ -83,27 +106,7 @@
         $('#ae_checkin a[data-checkin]').click(handleCheckin);
         $('#ae_checkin form[data-checkin]').submit(handleCheckin);
         aeFetchLocations();
-    }
-
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var center = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-            var zoom = 15;
-            if (!mapDefaults) {
-                if (map) {
-                    map.panTo(center);
-                    map.setZoom(zoom);
-                } else {
-                    mapDefaults = {
-                        zoom: zoom,
-                        center: center,
-                    };
-                }
-            }
-        });
+        getLocation();
     }
 
     function aePollLocations() {
