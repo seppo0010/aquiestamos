@@ -198,6 +198,7 @@
             center: {lat: -35.376184, lng: -63.998128},
         };
         options.styles = settings.styles;
+        options.mapTypeControlOptions = {mapTypeIds: google.maps.MapTypeId.ROADMAP};
         map = new google.maps.Map(document.getElementById('ae_map'), options);
         markerCluster = new MarkerClusterer(map, [], settings.cluster_options);
         aeAddLocations(locations);
