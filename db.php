@@ -11,6 +11,13 @@ defined( 'ABSPATH' ) or die( '' );
 $ae_db_version = 4;
 
 /**
+ * Makes sure db is properly initialized
+ */
+function ae_init_db() {
+	global $wpdb;
+	$wpdb->ae_checkin = $wpdb->prefix . 'ae_checkin';
+}
+/**
  * Installs or updates aqui estamos plugin.
  */
 function ae_install() {
@@ -19,6 +26,7 @@ function ae_install() {
 
 	$charset_collate = $wpdb->get_charset_collate();
 
+	ae_init_db();
 	$sql = "CREATE TABLE $wpdb->ae_checkin (
 		`id` bigint(9) NOT NULL AUTO_INCREMENT,
 		`post_id` bigint(20) UNSIGNED NOT NULL,

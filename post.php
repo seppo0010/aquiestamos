@@ -9,8 +9,7 @@
 defined( 'ABSPATH' ) or die( '' );
 
 add_action( 'init', function () {
-	global $wpdb;
-	$wpdb->ae_checkin = $wpdb->prefix . 'ae_checkin';
+	ae_init_db();
 
 	register_post_type('ae_checkin',
 		array(
