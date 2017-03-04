@@ -14,7 +14,7 @@ rm -rf /tmp/wordpress
 mkdir /tmp/wordpress
 wp core download --path=/tmp/wordpress --version=$WP_VERSION
 wp core config --path=/tmp/wordpress --dbname=testing --dbuser=root
-wp core install --path=/tmp/wordpress --url=127.0.0.1:8000 --title=aquiestamostest --admin_user=aquiestamos --admin_password=aquiestamos --admin_email=example@example.com
+wp core install --path=/tmp/wordpress --url=127.0.0.1:8000 --title=aquiestamostest --admin_user=aquiestamos --admin_password=aquiestamos --admin_email=example@example.com --skip-email
 
 ./bin/build-zip /tmp/aquiestamos.zip
 wp plugin install --path=/tmp/wordpress/ --activate /tmp/aquiestamos.zip
