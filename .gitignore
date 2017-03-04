@@ -1,1 +1,2 @@
 *.zip
+phpunit.xml.dist
