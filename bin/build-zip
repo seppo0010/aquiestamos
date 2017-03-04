@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+set -Eeu
+zip -r ${1:-aquiestamos.zip} . -x .git/\* phpunit\* tests/\* tests-browserstack/\*  -x .travis.yml CodeSniffer.conf phpcs.ruleset.xml LICENSE README.md browserstack.png bin/\* .gitignore vendor/\*
