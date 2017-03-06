@@ -74,7 +74,8 @@ class WP_REST_Checkin_Controller extends WP_REST_Posts_Controller {
 			$longitudes = array( -180, 180 );
 		}
 		$since = empty( $request['since'] ) ? null : (int) $request['since'];
-		return ae_get_posts_in_location( $latitudes, $longitudes, $since );
+		$upto = empty( $request['upto'] ) ? null : (int) $request['upto'];
+		return ae_get_posts_in_location( $latitudes, $longitudes, $since, $upto );
 	}
 
 	/**

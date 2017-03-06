@@ -6,6 +6,7 @@
     var markerCluster = null;
     var checkinAfterInit = false;
     var since = null;
+    var upto = null;
     var icon = null;
     var myIcon = null;
     var cookieName = 'ae_checkin_location';
@@ -119,6 +120,17 @@
             $('.ae-count').text(response.count);
             aeAddLocations(response.results);
         });
+
+        if (upto) {
+            $.ajax({
+                url: settings.base_url + 'ae/v1/checkin' + separator + 'upto=' + (upto || ''),
+                headers: {'x-wp-nonce':settings.nonce},
+            }).done(function (response) {
+                upto = response.upto;
+                $('.ae-count').text(response.count);
+                aeAddLocations(response.results);
+            });
+        }
     }
 
     function aeFetchLocations() {
@@ -154,6 +166,7 @@
             headers: {'x-wp-nonce':settings.nonce},
         }).done(function (response) {
             since = response.since;
+            upto = response.upto;
             aeInitMap(response.results);
         });
         setInterval(aePollLocations, 30000);

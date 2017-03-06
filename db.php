@@ -110,8 +110,9 @@ function ae_count_checkins() {
  * @param [float,float]|null $latitudes  Minimum and maximum latitudes to include.
  * @param [float,float]|null $longitudes Minimum and maximum longitudes to include.
  * @param int|null           $since      Minimum post id to get. This allows polling for new checkins.
+ * @param int|null           $upto       Maximum post id to get (excluded). This allows polling for old checkins.
  */
-function ae_get_posts_in_location( $latitudes, $longitudes, $since = null ) {
+function ae_get_posts_in_location( $latitudes, $longitudes, $since = null, $upto = null ) {
 	global $wpdb;
 	$cache_enabled = get_option( 'ae_cache_enabled' );
 	$cache_key = serialize( func_get_args() );
@@ -129,6 +130,7 @@ function ae_get_posts_in_location( $latitudes, $longitudes, $since = null ) {
 		}
 	}
 
+	$max = 1000;
 	$results = $wpdb->get_results($wpdb->prepare("
 		SELECT
 			location.id,
@@ -144,17 +146,22 @@ function ae_get_posts_in_location( $latitudes, $longitudes, $since = null ) {
 			location.longitude BETWEEN %f and %f
 		AND
 			location.id > %d
+		AND
+			location.id < %d
 		ORDER BY location.id DESC
-		LIMIT 1000
+		LIMIT %d
 		",
 		min( $latitudes ), max( $latitudes ),
 		min( $longitudes ), max( $longitudes ),
-		intval( $since )
+		intval( $since ),
+		intval( $upto ? $upto : PHP_INT_MAX ), // I'm sorry.
+		$max
 	));
 
 	$retval = array(
 		'count' => ae_count_checkins( ),
 		'since' => count( $results ) > 0 ? $results[0]->id : (int) $since,
+		'upto' => count( $results ) === $max ? $results[ $max - 1 ]->id : '',
 		'results' => array_map(function( $p ) {
 			return array(
 				'lat' => (float) $p->lat,
