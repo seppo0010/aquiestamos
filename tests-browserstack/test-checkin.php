@@ -1,10 +1,10 @@
 <?php
-require __DIR__ . '/browserstack.php';
+require_once __DIR__ . '/browserstack.php';
 
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
-class SingleTest extends BrowserStackTest {
+class CheckinTest extends BrowserStackTest {
 	public function setUp() {
 		parent::setUp();
 		self::$driver->manage()->deleteAllCookies();

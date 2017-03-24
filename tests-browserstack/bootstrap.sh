@@ -18,7 +18,7 @@ wp core install --path=/tmp/wordpress --url=127.0.0.1:8000 --title=aquiestamoste
 
 ./bin/build-zip /tmp/aquiestamos.zip
 wp plugin install --path=/tmp/wordpress/ --activate /tmp/aquiestamos.zip
-wp post --path=/tmp/wordpress create --post_content='[ae-map]' --post_type=post --post_title='A sample post' --post_status=publish
+wp post --path=/tmp/wordpress create --post_content='[ae-map debug="true"]' --post_type=post --post_title='A sample post' --post_status=publish
 
 wp server --path=/tmp/wordpress --host=127.0.0.1 --port=8000 &
 mv phpunit.browserstack.xml.dist phpunit.xml.dist

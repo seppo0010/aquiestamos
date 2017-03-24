@@ -47,6 +47,7 @@ add_shortcode('ae-map', function( $atts ) {
 		'styles' => json_decode( get_option( 'ae_map_styles' ) ),
 		'cluster_options' => json_decode( ae_get_option( 'ae_cluster_options' ) ),
 		'checkin_html' => ae_get_option( 'ae_checkin_html' ),
+		'debug' => ! empty( $atts['debug'] ) && 'false' !== $atts['debug'],
 	)) . ');</script>';
 });
 

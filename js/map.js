@@ -190,6 +190,7 @@
                     lng: post.lng,
                 },
                 icon: post.current_user ? myIcon : icon,
+                optimized: !settings.debug,
             });
             google.maps.event.addListener(marker, 'click', function() {
                 if (infowindow) {
