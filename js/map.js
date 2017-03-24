@@ -169,7 +169,7 @@
             upto = response.upto;
             aeInitMap(response.results);
         });
-        setInterval(aePollLocations, 30000);
+        setInterval(aePollLocations, settings.poll_frequency || 30000);
     };
 
     function aeAddLocations(locations) {
