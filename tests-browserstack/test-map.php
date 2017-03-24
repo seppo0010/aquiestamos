@@ -1,21 +1,18 @@
 <?php
-require_once __DIR__ . '/browserstack.php';
+require_once __DIR__ . '/base.php';
 
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
-class MapTest extends BrowserStackTest {
+class MapTest extends BaseTest {
 	public function setUp() {
 		parent::setUp();
 		self::$driver->manage()->deleteAllCookies();
-
-		self::$driver->get("http://127.0.0.1:8000/wp-login.php");
-		self::$driver->findElement(WebDriverBy::id('user_login'))->sendKeys('aquiestamos');
-		self::$driver->findElement(WebDriverBy::id('user_pass'))->sendKeys('aquiestamos');
-		self::$driver->findElement(WebDriverBy::id('wp-submit'))->click();
 	}
 
 	public function testCheckinAddsPin() {
+		$this->login();
+
 		self::$driver->get("http://127.0.0.1:8000/");
 		self::$driver->wait()->until(WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::cssSelector('#ae_map .gm-style')));
 		$pinsBefore = count(self::$driver->findElements(WebDriverBy::cssSelector('#ae_map .gmnoprint')));

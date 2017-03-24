@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/browserstack.php';
+require_once __DIR__ . '/base.php';
 
 use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 
-class CheckinTest extends BrowserStackTest {
+class CheckinTest extends BaseTest {
 	public function setUp() {
 		parent::setUp();
 		self::$driver->manage()->deleteAllCookies();
@@ -29,10 +29,7 @@ class CheckinTest extends BrowserStackTest {
 	}
 
 	public function testLoginWithCookieChecksIn() {
-		self::$driver->get("http://127.0.0.1:8000/wp-login.php");
-		self::$driver->findElement(WebDriverBy::id('user_login'))->sendKeys('aquiestamos');
-		self::$driver->findElement(WebDriverBy::id('user_pass'))->sendKeys('aquiestamos');
-		self::$driver->findElement(WebDriverBy::id('wp-submit'))->click();
+		$this->login();
 
 		self::$driver->manage()->addCookie([
 			'name' => 'ae_checkin_location',
