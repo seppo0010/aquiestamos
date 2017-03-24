@@ -19,7 +19,7 @@ require dirname( __FILE__ ) . '/admin.php';
 require dirname( __FILE__ ) . '/db.php';
 require dirname( __FILE__ ) . '/js.php';
 require dirname( __FILE__ ) . '/post.php';
-require dirname( __FILE__ ) . '/rest.php';
+require dirname( __FILE__ ) . '/class-wp-rest-checkin-controller.php';
 require dirname( __FILE__ ) . '/shortcode.php';
 
 register_activation_hook( 'aquiestamos/aquiestamos.php', 'ae_install' );

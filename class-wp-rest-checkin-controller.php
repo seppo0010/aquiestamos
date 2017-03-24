@@ -89,13 +89,20 @@ class WP_REST_Checkin_Controller extends WP_REST_Posts_Controller {
 	 * @return true|WP_Error True if the request has read access, WP_Error object otherwise.
 	 */
 	public function create_item( $request ) {
-		foreach ( array( 'lat' => array( -90, 90 ), 'lon' => array( -180, 180 ) ) as $k => $limits ) {
+		foreach ( array(
+				'lat' => array( -90, 90 ),
+				'lon' => array( -180, 180 ),
+			) as $k => $limits ) {
 			if ( ! isset( $request[ $k ] ) ) {
-				return new WP_Error( 'required_parameter', __( 'Coordinates are required.' ), array( 'status' => 400 ) );
+				return new WP_Error( 'required_parameter', __( 'Coordinates are required.' ), array(
+					'status' => 400,
+				) );
 			}
 			$val = $request[ $k ];
 			if ( (float) $val > $limits[1] || (float) $val < $limits[0] ) {
-				return new WP_Error( 'invalid_coordinate', __( 'Coordinates provided are not valid.' ), array( 'status' => 400 ) );
+				return new WP_Error( 'invalid_coordinate', __( 'Coordinates provided are not valid.' ), array(
+					'status' => 400,
+				) );
 			}
 		}
 		return parent::create_item( $request );

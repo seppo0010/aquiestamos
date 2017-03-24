@@ -156,7 +156,7 @@ add_action('admin_menu', function() {
 	<?php foreach ( ae_settings() as $setting ) { ?>
 	<tr valign="top">
 	<th scope="row"><label for="<?php echo $setting['name']; ?>"><?php echo $setting['label']; ?></label></th>
-	<?php if ( isset( $setting['type'] ) && 'checkbox' === $setting['type']  ) { ?>
+	<?php if ( isset( $setting['type'] ) && 'checkbox' === $setting['type'] ) { ?>
 	<td><input type="checkbox" id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" value="1" <?php echo ae_get_option( $setting['name'] ) ? 'checked=""' : ''; ?> /></td>
 	<?php } elseif ( isset( $setting['type'] ) && 'textarea' === $setting['type'] ) { ?>
 	<td><textarea id="<?php echo $setting['name']; ?>" name="<?php echo $setting['name']; ?>" cols="80" rows="6"><?php echo htmlentities( ae_get_option( $setting['name'] ), ENT_QUOTES ); ?></textarea></td>
