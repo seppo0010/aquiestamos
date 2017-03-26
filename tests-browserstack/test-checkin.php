@@ -10,7 +10,7 @@ class CheckinTest extends BaseTest {
 		$loginDialog = self::$driver->findElement(WebDriverBy::id('ae_login'));
 		$this->assertFalse($loginDialog->isDisplayed());
 		self::$driver->findElement(WebDriverBy::cssSelector('[data-checkin]'))->click();
-		$this->assertTrue($loginDialog->isDisplayed());
+		self::$driver->wait()->until(WebDriverExpectedCondition::visibilityOf($loginDialog));
 
 		// trying to check in without being logged in sets a cookie
 		// so upon login the user gets automatically checked in

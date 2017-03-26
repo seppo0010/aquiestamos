@@ -48,10 +48,18 @@ abstract class BaseTest extends BrowserStackTest {
 
 	protected function login() {
 		self::$driver->get("http://127.0.0.1:8000/wp-login.php");
-		usleep(1000); // sometimes the first characters are missing... is there a better way to wait?
+		self::$driver->findElement(WebDriverBy::id('user_login'))->click();
 		self::$driver->findElement(WebDriverBy::id('user_login'))->sendKeys('aquiestamos');
 		self::$driver->findElement(WebDriverBy::id('user_pass'))->sendKeys('aquiestamos');
 		self::$driver->findElement(WebDriverBy::id('wp-submit'))->click();
+	}
+
+	private function log($str) {
+		$fp = fopen('php://stderr', 'w');
+		$t = microtime(true);
+		$now = date("Y-m-d H:i:s", floor($t)) . '.' . floor(($t - floor($t)) * 1000);
+		fwrite($fp, "[$now] $str\n");
+		fclose($fp);
 	}
 
 	protected function setOption($option, $newValue) {
@@ -69,11 +77,13 @@ abstract class BaseTest extends BrowserStackTest {
 
 	protected function shouldAddPins($action, $howMany = 1) {
 		$pinsBefore = $this->numberOfPins();
+		$this->log("before: $pinsBefore");
 
 		$action();
 
 		self::$driver->wait()->until(function() use ($pinsBefore, $howMany) {
 			$pinsAfter = $this->numberOfPins();;
+			$this->log("after: $pinsAfter");
 			return $pinsBefore + $howMany === $pinsAfter;
 		});
 	}

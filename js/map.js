@@ -184,6 +184,7 @@
                     });
                 }
             }
+$.ajax({url: settings.base_url + 'debug?location=' + post.lat + ',' + post.lng + ';' + JSON.stringify(myIcon)});
             var marker = new google.maps.Marker({
                 position: {
                     lat: post.lat,
