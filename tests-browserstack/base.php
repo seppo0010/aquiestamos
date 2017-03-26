@@ -9,8 +9,13 @@ abstract class BaseTest extends BrowserStackTest {
 
 	public function setUp() {
 		parent::setUp();
+
+		self::$driver->manage()->deleteAllCookies();
+
 		$this->db = mysql_connect('localhost', 'root', '');
 		mysql_select_db('testing', $this->db);
+		$this->execute('TRUNCATE wp_ae_checkin');
+
 		$this->options = array();
 	}
 
@@ -43,6 +48,7 @@ abstract class BaseTest extends BrowserStackTest {
 
 	protected function login() {
 		self::$driver->get("http://127.0.0.1:8000/wp-login.php");
+		usleep(1000); // sometimes the first characters are missing... is there a better way to wait?
 		self::$driver->findElement(WebDriverBy::id('user_login'))->sendKeys('aquiestamos');
 		self::$driver->findElement(WebDriverBy::id('user_pass'))->sendKeys('aquiestamos');
 		self::$driver->findElement(WebDriverBy::id('wp-submit'))->click();
@@ -55,5 +61,20 @@ abstract class BaseTest extends BrowserStackTest {
 		$this->assertNotNull($oldValue);
 		$this->options[$option] = $oldValue;
 		$this->execute('UPDATE wp_options SET option_value = \'' . $this->escape($newValue) . '\' ' . $where);
+	}
+
+	protected function numberOfPins() {
+		return count(self::$driver->findElements(WebDriverBy::cssSelector('#ae_map .gmnoprint')));
+	}
+
+	protected function shouldAddPins($action, $howMany = 1) {
+		$pinsBefore = $this->numberOfPins();
+
+		$action();
+
+		self::$driver->wait()->until(function() use ($pinsBefore, $howMany) {
+			$pinsAfter = $this->numberOfPins();;
+			return $pinsBefore + $howMany === $pinsAfter;
+		});
 	}
 }
